@@ -15,6 +15,7 @@ import {useTranslation} from 'react-i18next';
 import auth from '@react-native-firebase/auth';
 
 import AppBackground from '../../components/appBackground ';
+import Touchableopacity from '../../components/Touchableopacity';
 const loginScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -161,9 +162,8 @@ const loginScreen = props => {
             />
           </View>
 
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
               setIcon(prev => !prev);
             }}>
             {icon ? (
@@ -181,13 +181,13 @@ const loginScreen = props => {
                 color="black"
               />
             )}
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
 
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
-            PlaySound();
-            login();
+            props.navigation.navigate('Home');
+            // login();
           }}
           style={{
             marginTop: 30,
@@ -211,7 +211,7 @@ const loginScreen = props => {
             }}>
             {t('Login')}
           </Text>
-        </TouchableOpacity>
+        </Touchableopacity>
         <View
           style={{flexDirection: 'row', alignSelf: 'center', marginTop: 20}}>
           <Text
@@ -222,9 +222,8 @@ const loginScreen = props => {
             }}>
             {t('Dont have an account')}
           </Text>
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
               props.navigation.navigate('SignUp');
             }}
             style={{marginStart: 5}}>
@@ -236,7 +235,7 @@ const loginScreen = props => {
               }}>
               {t('SignUp')}
             </Text>
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
       </View>
     </AppBackground>

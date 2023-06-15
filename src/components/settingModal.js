@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlaySound from '../../assets/sound/pressSound';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from './Touchableopacity';
 
 const SettingModal = props => {
   const [soundIcon, setSoundIcon] = useState(true);
@@ -28,6 +29,14 @@ const SettingModal = props => {
     setSelectedLanguage(applangauge);
     await AsyncStorage.setItem('Selected_Language', applangauge);
   };
+
+  useEffect(() => {
+    if (i18n.language === 'en') {
+      setIsSelected(true);
+    } else {
+      setIsSelected(false);
+    }
+  }, []);
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
   //   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
   //   const renderItem = ({item}) => {
@@ -102,18 +111,17 @@ const SettingModal = props => {
                 }}>
                 Sound
               </Text>
-              <TouchableOpacity
+              <Touchableopacity
                 style={{marginEnd: 10}}
                 onPress={() => {
                   setSoundIcon(prev => !prev);
-                  PlaySound();
                 }}>
                 {soundIcon ? (
                   <FontAwesome5 name="toggle-on" size={34} color="green" />
                 ) : (
                   <FontAwesome5 name="toggle-off" size={34} color="red" />
                 )}
-              </TouchableOpacity>
+              </Touchableopacity>
             </View>
             <View
               style={{
@@ -135,18 +143,17 @@ const SettingModal = props => {
                 }}>
                 {t('Music')}
               </Text>
-              <TouchableOpacity
+              <Touchableopacity
                 style={{marginEnd: 10}}
                 onPress={() => {
                   setMusicIcon(prev => !prev);
-                  PlaySound();
                 }}>
                 {musicIcon ? (
                   <FontAwesome5 name="toggle-on" size={34} color="green" />
                 ) : (
                   <FontAwesome5 name="toggle-off" size={34} color="red" />
                 )}
-              </TouchableOpacity>
+              </Touchableopacity>
             </View>
             <View
               style={{
@@ -167,12 +174,11 @@ const SettingModal = props => {
                 {t('Language')}
               </Text>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <TouchableOpacity
+                <Touchableopacity
                   // disabled={selectedLanguage === 'en'}
                   style={{marginEnd: 10}}
                   onPress={() => {
                     setIsSelected(true);
-                    PlaySound();
                     setAppLanguage('en');
                   }}>
                   <Text
@@ -184,13 +190,12 @@ const SettingModal = props => {
                     }}>
                     En
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                </Touchableopacity>
+                <Touchableopacity
                   // disabled={selectedLanguage === 'en'}
                   style={{marginEnd: 10}}
                   onPress={() => {
                     setIsSelected(false);
-                    PlaySound();
                     setAppLanguage('it');
                   }}>
                   <Text
@@ -202,7 +207,7 @@ const SettingModal = props => {
                     }}>
                     It
                   </Text>
-                </TouchableOpacity>
+                </Touchableopacity>
               </View>
             </View>
           </View>
@@ -213,9 +218,9 @@ const SettingModal = props => {
               height: 130,
               justifyContent: 'space-between',
             }}>
-            <TouchableOpacity
+            <Touchableopacity
               onPress={() => {
-                setIsSelected(prev);
+                setIsSelected(prev => !prev);
                 props.onPressC();
               }}
               style={{
@@ -236,9 +241,9 @@ const SettingModal = props => {
                 }}>
                 {t('Cancel')}
               </Text>
-            </TouchableOpacity>
+            </Touchableopacity>
 
-            <TouchableOpacity
+            <Touchableopacity
               onPress={() => {
                 handleChangeLanguage();
                 props.onPressK();
@@ -261,7 +266,7 @@ const SettingModal = props => {
                 }}>
                 Ok
               </Text>
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
         </View>
       </View>

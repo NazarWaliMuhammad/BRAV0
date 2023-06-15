@@ -7,6 +7,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PlaySound from '../../../assets/sound/pressSound';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from '../../components/Touchableopacity';
 const SignUpScreen = props => {
   const [icon, setIcon] = useState(true);
   const {t, i18n} = useTranslation();
@@ -21,14 +22,13 @@ const SignUpScreen = props => {
     //   }}>
     <AppBackground>
       <View style={{marginTop: 40}}>
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
             props.navigation.goBack();
-            PlaySound();
           }}
           style={{marginStart: 15}}>
           <FontAwesome name="long-arrow-left" size={28} color="white" />
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
       <View
         style={{
@@ -123,9 +123,8 @@ const SignUpScreen = props => {
             />
           </View>
 
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
               setIcon(prev => !prev);
             }}>
             {icon ? (
@@ -143,13 +142,11 @@ const SignUpScreen = props => {
                 color="black"
               />
             )}
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
 
-        <TouchableOpacity
-          onPress={() => {
-            PlaySound();
-          }}
+        <Touchableopacity
+          onPress={() => {}}
           style={{
             marginTop: 30,
             width: '85%',
@@ -172,7 +169,7 @@ const SignUpScreen = props => {
             }}>
             {t('SignUp')}
           </Text>
-        </TouchableOpacity>
+        </Touchableopacity>
         <View
           style={{flexDirection: 'row', alignSelf: 'center', marginTop: 20}}>
           <Text
@@ -183,9 +180,8 @@ const SignUpScreen = props => {
             }}>
             {t('Already have an account')}
           </Text>
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
               props.navigation.navigate('Login');
             }}
             style={{marginStart: 5}}>
@@ -197,7 +193,7 @@ const SignUpScreen = props => {
               }}>
               {t('Login')}
             </Text>
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
       </View>
     </AppBackground>

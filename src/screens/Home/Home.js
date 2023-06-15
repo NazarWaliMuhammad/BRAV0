@@ -15,6 +15,7 @@ import Fontiso from 'react-native-vector-icons/Fontisto';
 import PlaySound from '../../../assets/sound/pressSound';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from '../../components/Touchableopacity';
 const HomeScreen = props => {
   const {t, i18n} = useTranslation();
 
@@ -91,10 +92,8 @@ const HomeScreen = props => {
             justifyContent: 'space-between',
           }}>
           <View style={{marginVertical: -10}}>
-            <TouchableOpacity
-              onPress={() => {
-                PlaySound();
-              }}
+            <Touchableopacity
+              onPress={() => {}}
               style={{
                 width: 50,
                 height: 50,
@@ -106,11 +105,9 @@ const HomeScreen = props => {
                 alignItems: 'center',
               }}>
               <AntDesign name="star" size={30} color="#FFB600" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                PlaySound();
-              }}
+            </Touchableopacity>
+            <Touchableopacity
+              onPress={() => {}}
               style={{
                 width: 50,
                 height: 50,
@@ -122,11 +119,9 @@ const HomeScreen = props => {
                 alignItems: 'center',
               }}>
               <Ionicons name="game-controller" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                PlaySound();
-              }}
+            </Touchableopacity>
+            <Touchableopacity
+              onPress={() => {}}
               style={{
                 width: 50,
                 height: 50,
@@ -138,11 +133,9 @@ const HomeScreen = props => {
                 alignItems: 'center',
               }}>
               <Fontiso name="info" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                PlaySound();
-              }}
+            </Touchableopacity>
+            <Touchableopacity
+              onPress={() => {}}
               style={{
                 width: 50,
                 height: 50,
@@ -154,13 +147,11 @@ const HomeScreen = props => {
                 alignItems: 'center',
               }}>
               <Fontiso name="facebook" size={30} color="white" />
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
           <View style={{alignItems: 'center'}}>
-            <TouchableOpacity
+            <Touchableopacity
               onPress={() => {
-                PlaySound();
-
                 props.navigation.navigate('Main');
               }}
               style={{
@@ -186,11 +177,9 @@ const HomeScreen = props => {
                 }}>
                 {t('Play')}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Touchableopacity>
+            <Touchableopacity
               onPress={() => {
-                PlaySound();
-
                 props.navigation.navigate('Login');
               }}
               style={{
@@ -216,13 +205,11 @@ const HomeScreen = props => {
                 }}>
                 {t('Quit')}
               </Text>
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
           <View style={{flexDirection: 'column-reverse', marginVertical: 26}}>
-            <TouchableOpacity
-              onPress={() => {
-                PlaySound();
-              }}
+            <Touchableopacity
+              onPress={() => {}}
               style={{
                 width: 50,
                 height: 50,
@@ -233,7 +220,7 @@ const HomeScreen = props => {
                 alignItems: 'center',
               }}>
               <Ionicons name="settings" size={28} color="white" />
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
         </View>
         {/* <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>

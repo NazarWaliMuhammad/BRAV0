@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import AppBackground from '../../components/appBackground ';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Touchableopacity from '../../components/Touchableopacity';
 
 const FirstTimeLogin = props => {
   const [isSelectedIt, setIsSelectedIt] = useState(null);
@@ -72,7 +73,7 @@ const FirstTimeLogin = props => {
               borderBottomColor: 'gray',
               //   marginVertical: 20,
             }}>
-            <TouchableOpacity
+            <Touchableopacity
               onPress={() => {
                 setIsSelectedEn(false);
                 setIsSelectedIt(true);
@@ -85,7 +86,7 @@ const FirstTimeLogin = props => {
               ) : (
                 <FontAwesome name="circle-thin" size={33} color="#0bda51" />
               )}
-            </TouchableOpacity>
+            </Touchableopacity>
             <Image
               source={require('../../../assets/image/italy.png')}
               style={{width: 55, height: 40}}
@@ -109,7 +110,7 @@ const FirstTimeLogin = props => {
 
               //   marginVertical: 20,
             }}>
-            <TouchableOpacity
+            <Touchableopacity
               onPress={() => {
                 setIsSelectedEn(true);
                 setIsSelectedIt(false);
@@ -122,7 +123,7 @@ const FirstTimeLogin = props => {
               ) : (
                 <FontAwesome name="circle-thin" size={33} color="#0bda51" />
               )}
-            </TouchableOpacity>
+            </Touchableopacity>
             <Image
               source={require('../../../assets/image/usa.png')}
               style={{width: 55, height: 40}}
@@ -137,7 +138,7 @@ const FirstTimeLogin = props => {
             </Text>
           </View>
         </View>
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
             props.navigation.replace('Splash');
             LanguageSetter();
@@ -163,7 +164,7 @@ const FirstTimeLogin = props => {
             }}>
             Proceed
           </Text>
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
     </AppBackground>
   );

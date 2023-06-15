@@ -17,17 +17,20 @@ import SettingModal from '../../components/settingModal';
 import {MAIN_LEVLES} from '../../utils/services/GameServices/LevelUtils';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from '../../components/Touchableopacity';
+import GameStartModal from '../../components/gameStartModal';
 const MainScreen = props => {
   const {t, i18n} = useTranslation();
 
   const [icon, setIcon] = useState(true);
   const [settingModal, setSettingModal] = useState(false);
-
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+  const [name, setName] = useState();
   const data = [
     {
       level: '1st',
       name: 'Animals',
-      img: '',
+      img: '../../../assets/image/animal01.png',
       isLocked: false,
     },
     {
@@ -128,11 +131,14 @@ const MainScreen = props => {
         numColumns={3}
         renderItem={({item, index}) => {
           return (
-            <TouchableOpacity
+            <Touchableopacity
               disabled={item.isLocked}
               onPress={() => {
-                PlaySound();
-                props.navigation.navigate('Sub', {name: item.name});
+                setName(item.name);
+                // props.navigation.navigate('Sub', {
+                //   name: item.name,
+                // });
+                setInfoModalVisible(true);
               }}
               style={{
                 alignSelf: 'center',
@@ -188,7 +194,7 @@ const MainScreen = props => {
                   {item.name}
                 </Text>
               </View>
-            </TouchableOpacity>
+            </Touchableopacity>
           );
         }}
       />
@@ -200,10 +206,9 @@ const MainScreen = props => {
           flex: 1,
           marginBottom: 40,
         }}>
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
             props.navigation.goBack();
-            PlaySound();
           }}
           style={{
             width: 70,
@@ -215,11 +220,10 @@ const MainScreen = props => {
             alignItems: 'center',
           }}>
           <Ionicons name="arrow-back" size={40} color="#00b200" />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Touchableopacity>
+        <Touchableopacity
           onPress={() => {
             setSettingModal(true);
-            PlaySound();
           }}
           style={{
             width: 70,
@@ -231,17 +235,27 @@ const MainScreen = props => {
             alignItems: 'center',
           }}>
           <Ionicons name="settings" size={40} color="#00b200" />
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
+      <GameStartModal
+        onPressStart={() => {
+          setInfoModalVisible(false);
+          props.navigation.navigate('Sub', {
+            name: name,
+          });
+        }}
+        onPressCancel={() => {
+          setInfoModalVisible(false);
+        }}
+        visible={infoModalVisible}
+      />
       <SettingModal
         onPressK={() => {
           setSettingModal(false);
-          PlaySound();
         }}
         visible={settingModal}
         onPressC={() => {
           setSettingModal(false);
-          PlaySound();
         }}
       />
     </AppBackground>

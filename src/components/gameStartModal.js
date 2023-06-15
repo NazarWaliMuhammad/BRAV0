@@ -12,6 +12,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from './Touchableopacity';
 const GameStartModal = props => {
   const {t, i18n} = useTranslation();
   const [soundIcon, setSoundIcon] = useState(true);
@@ -53,9 +54,9 @@ const GameStartModal = props => {
             borderRadius: 10,
           }}>
           <View style={{flexDirection: 'row-reverse'}}>
-            <TouchableOpacity style={{marginEnd: 8, marginTop: 8}}>
+            <Touchableopacity style={{marginEnd: 8, marginTop: 8}}>
               <Entypo name="cross" size={30} color="#d3d3d3" />
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
           <View
             style={{
@@ -97,7 +98,7 @@ const GameStartModal = props => {
               alignItems: 'center',
               height: 100,
             }}>
-            <TouchableOpacity
+            <Touchableopacity
               onPress={props.onPressCancel}
               style={{
                 alignItems: 'center',
@@ -117,8 +118,8 @@ const GameStartModal = props => {
                 }}>
                 {t('Cancel')}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Touchableopacity>
+            <Touchableopacity
               onPress={props.onPressStart}
               style={{
                 alignItems: 'center',
@@ -137,7 +138,7 @@ const GameStartModal = props => {
                 }}>
                 {t('Start')}
               </Text>
-            </TouchableOpacity>
+            </Touchableopacity>
           </View>
         </View>
       </View>

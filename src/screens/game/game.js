@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
-import IconModal from '../../components/iconModal';
+import IconModal from './iconModal';
 import PlaySound from '../../../assets/sound/pressSound';
 import FlipCard from 'react-native-flip-card';
 import GameStartModal from '../../components/gameStartModal';
@@ -8,9 +8,15 @@ import AppBackground from '../../components/appBackground ';
 import {useSelector, useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import Timer from '../../components/Timer';
+import Touchableopacity from '../../components/Touchableopacity';
+import LoseModal from '../../components/loseModal';
+import WinModal from '../../components/WinModal';
 const GameScreen = props => {
   const {t, i18n} = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalLoseVisible, setModalLoseVisible] = useState(false);
+  const [modalWinVisible, setModalWinVisible] = useState(false);
+
   const time = useSelector(state => state.time);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
@@ -32,6 +38,7 @@ const GameScreen = props => {
       }
     }
     setData(randomImg);
+    console.log(randomImg);
   };
 
   useEffect(() => {
@@ -42,7 +49,6 @@ const GameScreen = props => {
       setModalVisible(true);
     }, 2000);
   }, []);
-
   const data2 = [
     {
       level: '1st',
@@ -195,10 +201,9 @@ const GameScreen = props => {
                 flip={flipped}
                 clickable={true}>
                 <View>
-                  <TouchableOpacity
+                  <Touchableopacity
                     onPress={() => {
-                      PlaySound();
-
+                      // PlaySound();
                       // setModalVisible(true);
                     }}
                     style={{
@@ -220,18 +225,15 @@ const GameScreen = props => {
                         borderColor: '#FFB600',
                       }}>
                       <Image
-                        source={{
-                          uri: item,
-                        }}
+                        source={item}
                         style={{width: '100%', height: '100%'}}
                       />
                     </View>
-                  </TouchableOpacity>
+                  </Touchableopacity>
                 </View>
                 <View>
-                  <TouchableOpacity
+                  <Touchableopacity
                     onPress={() => {
-                      PlaySound();
                       // setModalVisible(true);
                     }}
                     style={{
@@ -261,7 +263,7 @@ const GameScreen = props => {
                         {t('Guess')}
                       </Text>
                     </View>
-                  </TouchableOpacity>
+                  </Touchableopacity>
                 </View>
               </FlipCard>
             </View>
@@ -269,10 +271,9 @@ const GameScreen = props => {
         }}
       />
       <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
             props.navigation.goBack();
-            PlaySound();
           }}
           style={{
             width: '90%',
@@ -291,15 +292,43 @@ const GameScreen = props => {
             }}>
             {t('End the level')}
           </Text>
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
 
       <IconModal
+        tilesImgs={data}
         visible={modalVisible}
         data={Carouseldata}
-        onPressUp={() => {
+        winModal={() => {
+          setModalWinVisible(true);
           setModalVisible(false);
         }}
+        loseModal={() => {
+          setModalLoseVisible(true);
+          setModalVisible(false);
+        }}
+        // onPressUp={() => {
+        //   setModalLoseVisible(true);
+        //   setModalVisible(false);
+        // }}
+        // onPressDown={() => {
+        //   setModalLoseVisible(true);
+        //   setModalVisible(false);
+        // }}
+      />
+      <WinModal
+        onPress={() => {
+          props.navigation.goBack();
+          setModalWinVisible(false);
+        }}
+        visible={modalWinVisible}
+      />
+      <LoseModal
+        onPress={() => {
+          props.navigation.navigate('Main');
+          setModalLoseVisible(false);
+        }}
+        visible={modalLoseVisible}
       />
     </AppBackground>
   );

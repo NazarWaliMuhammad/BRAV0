@@ -50,6 +50,8 @@ export default PlaySound = () => {
   whoosh.getCurrentTime(seconds => console.log('at ' + seconds));
 
   // Pause the sound
+  {
+  }
   whoosh.pause();
 
   // Stop the sound and rewind to the beginning

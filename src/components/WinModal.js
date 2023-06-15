@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import PlaySound from '../../assets/sound/pressSound';
 import {useTranslation} from 'react-i18next';
+import Touchableopacity from './Touchableopacity';
 const WinModal = props => {
   const {t, i18n} = useTranslation();
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
@@ -79,9 +80,9 @@ const WinModal = props => {
               50+ {t('Points Earned')}
             </Text>
           </View>
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
+              props.onPress();
             }}
             style={{
               marginTop: 10,
@@ -101,7 +102,7 @@ const WinModal = props => {
               }}>
               {t('Continue')}
             </Text>
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
       </View>
     </Modal>

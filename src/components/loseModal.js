@@ -12,8 +12,12 @@ import Carousel from 'react-native-reanimated-carousel';
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
+import {useDispatch} from 'react-redux';
+import Touchableopacity from './Touchableopacity';
+import {setTimer} from '../../redux/Action/Action';
 const LoseModal = props => {
   const {t, i18n} = useTranslation();
+  const dispatch = useDispatch();
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
   //   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 
@@ -60,9 +64,10 @@ const LoseModal = props => {
             }}>
             GAME OVER!!
           </Text>
-          <TouchableOpacity
+          <Touchableopacity
             onPress={() => {
-              PlaySound();
+              dispatch(setTimer(300));
+              props.onPress();
             }}
             style={{
               marginTop: 10,
@@ -82,7 +87,7 @@ const LoseModal = props => {
               }}>
               {t('Retry')}
             </Text>
-          </TouchableOpacity>
+          </Touchableopacity>
         </View>
       </View>
     </Modal>

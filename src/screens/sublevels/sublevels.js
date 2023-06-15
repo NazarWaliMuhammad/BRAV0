@@ -19,6 +19,8 @@ import GameStartModal from '../../components/gameStartModal';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Timer from '../../components/Timer';
+import Touchableopacity from '../../components/Touchableopacity';
+
 // import {ANIMALS_IMGS} from '../../utils/services/GameServices/LevelUtils';
 const SubScreen = props => {
   const [settingModal, setSettingModal] = useState(false);
@@ -29,45 +31,26 @@ const SubScreen = props => {
   useEffect(() => {
     if (props.route.params.name === 'Animals') {
       setCategory([
-        'https://cdn.pixabay.com/photo/2022/01/10/11/23/heart-6928093_1280.png',
-
-        'https://cdn.pixabay.com/photo/2016/10/10/14/13/dog-1728494_1280.png',
-
-        'https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png',
-
-        'https://cdn.pixabay.com/photo/2018/01/10/23/53/rabbit-3075088_1280.png',
-
-        'https://cdn.pixabay.com/photo/2012/04/02/15/05/elephant-24722_1280.png',
-
-        'https://cdn.pixabay.com/photo/2012/05/07/13/00/giraffe-48393_1280.png',
-
-        'https://cdn.pixabay.com/photo/2013/07/12/17/55/zebra-152604_1280.png',
-
-        'https://cdn.pixabay.com/photo/2015/01/30/00/45/bird-616803_1280.png',
-
-        'https://cdn.pixabay.com/photo/2013/07/13/12/05/rattlesnake-159135_1280.png',
-
-        'https://cdn.pixabay.com/photo/2012/05/04/10/06/animal-47047_1280.png',
-
-        'https://cdn.pixabay.com/photo/2013/07/12/16/29/hornet-151003_1280.png',
-
-        'https://cdn.pixabay.com/photo/2012/05/07/13/22/camel-48445_1280.png',
-
-        'https://cdn.pixabay.com/photo/2018/07/21/07/27/cat-3552048_1280.png',
-
-        'https://cdn.pixabay.com/photo/2022/08/23/11/40/fox-7405603_1280.png',
-
-        'https://cdn.pixabay.com/photo/2015/03/04/18/02/panda-659186_1280.png',
-
-        'https://cdn.pixabay.com/photo/2020/07/21/16/24/landscape-5426755_1280.jpg',
-
-        'https://cdn.pixabay.com/photo/2019/09/19/12/23/bird-4489182_1280.png',
-
-        'https://cdn.pixabay.com/photo/2016/07/18/12/13/parrot-1525817_1280.png',
-
-        'https://cdn.pixabay.com/photo/2016/11/18/21/10/wolf-1836875_1280.jpg',
-
-        'https://cdn.pixabay.com/photo/2012/04/25/00/03/dove-41260_1280.png',
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
       ]);
     }
     if (props.route.params.name === 'People') {
@@ -448,7 +431,10 @@ const SubScreen = props => {
       color: '#88CCEE',
       difficulty: 'Begginer',
       onPress: () => {
-        setInfoModalVisible(true);
+        props.navigation.navigate('Game', {
+          data: category,
+          tiles: 2,
+        });
       },
       img: require('../../../assets/image/level01.png'),
       isLocked: false,
@@ -644,12 +630,12 @@ const SubScreen = props => {
           justifyContent: 'space-evenly',
           alignItems: 'center',
         }}>
-        <TouchableOpacity>
+        <Touchableopacity style={{}} onPress={() => {}}>
           <Image
             source={require('../../../assets/image/back.png')}
             style={{width: 60, height: 60}}
           />
-        </TouchableOpacity>
+        </Touchableopacity>
         <Text
           style={{
             fontSize: 60,
@@ -658,12 +644,12 @@ const SubScreen = props => {
           }}>
           {props.route.params.name}
         </Text>
-        <TouchableOpacity>
+        <Touchableopacity style={{}} onPress={() => {}}>
           <Image
             source={require('../../../assets/image/next.png')}
             style={{width: 60, height: 60}}
           />
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
 
       <View
@@ -710,7 +696,7 @@ const SubScreen = props => {
         numColumns={3}
         renderItem={({item, index}) => {
           return (
-            <TouchableOpacity
+            <Touchableopacity
               disabled={item.isLocked}
               onPress={item.onPress}
               style={{
@@ -761,7 +747,7 @@ const SubScreen = props => {
                   {item.name} Tiles
                 </Text> */}
               </View>
-            </TouchableOpacity>
+            </Touchableopacity>
           );
         }}
       />
@@ -773,10 +759,9 @@ const SubScreen = props => {
           flex: 1,
           marginBottom: 40,
         }}>
-        <TouchableOpacity
+        <Touchableopacity
           onPress={() => {
             props.navigation.goBack();
-            PlaySound();
           }}
           style={{
             width: 60,
@@ -788,11 +773,10 @@ const SubScreen = props => {
             alignItems: 'center',
           }}>
           <Ionicons name="arrow-back" size={40} color="#00b200" />
-        </TouchableOpacity>
-        <TouchableOpacity
+        </Touchableopacity>
+        <Touchableopacity
           onPress={() => {
             setSettingModal(true);
-            PlaySound();
           }}
           style={{
             width: 60,
@@ -804,22 +788,8 @@ const SubScreen = props => {
             alignItems: 'center',
           }}>
           <Ionicons name="settings" size={40} color="#00b200" />
-        </TouchableOpacity>
+        </Touchableopacity>
       </View>
-      <GameStartModal
-        onPressStart={() => {
-          setInfoModalVisible(false);
-
-          props.navigation.navigate('Game', {
-            data: category,
-            tiles: 2,
-          });
-        }}
-        onPressCancel={() => {
-          setInfoModalVisible(false);
-        }}
-        visible={infoModalVisible}
-      />
       <SettingModal
         onPressK={() => {
           setSettingModal(false);
