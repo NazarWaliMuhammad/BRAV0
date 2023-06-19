@@ -8,7 +8,7 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
+
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
@@ -53,8 +53,13 @@ const GameStartModal = props => {
             height: 210,
             borderRadius: 10,
           }}>
-          <View style={{flexDirection: 'row-reverse'}}>
-            <Touchableopacity style={{marginEnd: 8, marginTop: 8}}>
+          <View
+            style={{flexDirection: 'row-reverse', width: '100%', height: 30}}>
+            <Touchableopacity
+              onPress={() => {
+                props.onPressCancel();
+              }}
+              style={{marginEnd: 8, marginTop: 8}}>
               <Entypo name="cross" size={30} color="#d3d3d3" />
             </Touchableopacity>
           </View>
@@ -62,7 +67,9 @@ const GameStartModal = props => {
             style={{
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 4,
+
+              width: '100%',
+              height: 40,
             }}>
             <Text
               style={{
@@ -78,8 +85,9 @@ const GameStartModal = props => {
               width: '60%',
               justifyContent: 'center',
               alignItems: 'center',
-              marginTop: 10,
+              // marginTop: 10,
               alignSelf: 'center',
+              height: 40,
             }}>
             <Text
               style={{
@@ -93,6 +101,7 @@ const GameStartModal = props => {
           </View>
           <View
             style={{
+              width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',

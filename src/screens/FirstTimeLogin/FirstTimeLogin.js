@@ -62,7 +62,13 @@ const FirstTimeLogin = props => {
               Select Language
             </Text>
           </View>
-          <View
+          <Touchableopacity
+            onPress={() => {
+              setIsSelectedEn(false);
+              setIsSelectedIt(true);
+              setLanguage('it');
+              setButton(false);
+            }}
             style={{
               flexDirection: 'row',
               justifyContent: 'flex-start',
@@ -99,8 +105,14 @@ const FirstTimeLogin = props => {
               }}>
               Italia
             </Text>
-          </View>
-          <View
+          </Touchableopacity>
+          <Touchableopacity
+            onPress={() => {
+              setIsSelectedEn(true);
+              setIsSelectedIt(false);
+              setLanguage('en');
+              setButton(false);
+            }}
             style={{
               flexDirection: 'row',
               justifyContent: 'flex-start',
@@ -136,7 +148,7 @@ const FirstTimeLogin = props => {
               }}>
               English
             </Text>
-          </View>
+          </Touchableopacity>
         </View>
         <Touchableopacity
           onPress={() => {

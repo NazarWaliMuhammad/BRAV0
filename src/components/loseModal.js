@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   Modal,
@@ -8,16 +8,29 @@ import {
   View,
   Dimensions,
 } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
+
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Touchableopacity from './Touchableopacity';
-import {setTimer} from '../../redux/Action/Action';
+import {setScore, setSublevel, setTimer} from '../../redux/Action/Action';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 const LoseModal = props => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
+  const [timerState, setTimerState] = useState(null);
+  const [scoreState, setScoreState] = useState(null);
+  const timer = useSelector(state => state.time);
+  const score = useSelector(state => state.score);
+  useEffect(() => {
+    setTimerState(timer);
+  }, [timer]);
+
+  useEffect(() => {
+    setScoreState(score);
+  }, [score]);
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
   //   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 
@@ -38,6 +51,17 @@ const LoseModal = props => {
   //       </View>
   //     );
   //   };
+  const onLoseFirebase = () => {
+    firestore()
+      .collection('gameRecord')
+      .doc(auth().currentUser.uid)
+      .update({
+        subLevel: 1,
+      })
+      .then(() => {
+        console.log('User updated!');
+      });
+  };
   return (
     <Modal transparent={true} visible={props.visible}>
       <View
@@ -55,39 +79,62 @@ const LoseModal = props => {
             borderRadius: 10,
             alignItems: 'center',
           }}>
-          <Text
+          <View
             style={{
-              fontFamily: 'LeagueSpartan-Bold',
-              fontSize: 40,
-              color: '#03D1FF',
-              marginTop: 30,
-            }}>
-            GAME OVER!!
-          </Text>
-          <Touchableopacity
-            onPress={() => {
-              dispatch(setTimer(300));
-              props.onPress();
-            }}
-            style={{
-              marginTop: 10,
-              width: '40%',
-              height: 50,
-              backgroundColor: '#03D1FF',
               alignItems: 'center',
               justifyContent: 'center',
-              borderRadius: 10,
+              alignSelf: 'center',
+              width: '100%',
+              height: 100,
             }}>
             <Text
               style={{
-                fontFamily: 'LeagueSpartan-SemiBold',
-                fontSize: 24,
-                color: 'white',
+                fontFamily: 'LeagueSpartan-Bold',
+                fontSize: 40,
+                color: '#03D1FF',
                 // marginTop: 30,
               }}>
-              {t('Retry')}
+              GAME OVER!!
             </Text>
-          </Touchableopacity>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              alignSelf: 'center',
+              width: '100%',
+              height: 30,
+            }}>
+            <Touchableopacity
+              onPress={() => {
+                if (timerState === 0) {
+                  dispatch(setSublevel(1));
+                  onLoseFirebase();
+                  dispatch(setTimer(300));
+                }
+
+                props.onPress();
+              }}
+              style={{
+                // marginTop: 10,
+                width: '40%',
+                height: 50,
+                backgroundColor: '#03D1FF',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 10,
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  fontSize: 24,
+                  color: 'white',
+                  // marginTop: 30,
+                }}>
+                {t('Retry')}
+              </Text>
+            </Touchableopacity>
+          </View>
         </View>
       </View>
     </Modal>

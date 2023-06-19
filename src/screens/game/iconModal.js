@@ -10,14 +10,15 @@ import {
   AppRegistry,
   Alert,
 } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import Entypo from 'react-native-vector-icons/Entypo';
-import PlaySound from '../../../assets/sound/pressSound';
+
 import Touchableopacity from '../../components/Touchableopacity';
 const IconModal = props => {
   const imgs = props.data;
   const tilesImgs = props.tilesImgs;
+  const imgsLength = props.dataLength;
+  // console.log(tilesImgs);
   const [data, setData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [rightAnswers, setRightAnswers] = useState(0);
@@ -36,9 +37,11 @@ const IconModal = props => {
       }
     }
     setData(randomImg);
+    console.log(randomImg.length);
     // console.log(randomImg.length);
   };
   useEffect(() => {
+    console.log(imgsLength);
     setPressed(0);
     setCurrentIndex(0);
     shuffleImgs();
@@ -65,15 +68,14 @@ const IconModal = props => {
   };
   const checkRightAnswers = () => {
     console.log(rightAnswers);
-    if (rightAnswers === tilesImgs.length) {
+    if (rightAnswers === imgsLength) {
       props.winModal();
     } else {
       props.loseModal();
     }
   };
   useEffect(() => {
-    const tiles = props.tilesImgs;
-    if (pressed == 2) {
+    if (pressed == imgsLength) {
       checkRightAnswers();
     }
   }, [pressed]);
@@ -137,6 +139,7 @@ const IconModal = props => {
               />
               <Touchableopacity
                 onPress={() => {
+                  props.onPress();
                   if (currentIndex > 19) {
                     setCurrentIndex(0);
                     props.loseModal();

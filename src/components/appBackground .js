@@ -9,8 +9,7 @@ import {
   Dimensions,
   ImageBackground,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import Carousel from 'react-native-reanimated-carousel';
+
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 const AppBackground = props => {

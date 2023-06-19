@@ -11,20 +11,23 @@ import Timer from '../../components/Timer';
 import Touchableopacity from '../../components/Touchableopacity';
 import LoseModal from '../../components/loseModal';
 import WinModal from '../../components/WinModal';
+
 const GameScreen = props => {
   const {t, i18n} = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
   const [modalLoseVisible, setModalLoseVisible] = useState(false);
   const [modalWinVisible, setModalWinVisible] = useState(false);
-
-  const time = useSelector(state => state.time);
+  const [length, setLength] = useState(null);
+  const [score, setScore] = useState(null);
+  const timer = useSelector(state => state.time);
+  const scoreState = useSelector(state => state.score);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [flipped, setFlipped] = useState(false);
   const numTiles = props.route.params.tiles;
   const Carouseldata = props.route.params.data;
-
-  // const [Carouseldata, setCarouseldata] = useState(props.route.params.data);
+  const [attempts, setAttempts] = useState();
+  // const [Carouseldata, setCarouseldata] = us  eState(props.route.params.data);
   const generateRandomImages = async () => {
     let randomImg = [];
     for (let a = 0; a < numTiles; a++) {
@@ -38,17 +41,34 @@ const GameScreen = props => {
       }
     }
     setData(randomImg);
-    console.log(randomImg);
+    setLength(randomImg.length);
+    setAttempts(randomImg.length);
   };
-
+  // const length = async () => {
+  //   const dataLength = await data.length;
+  //   console.log(dataLength);
+  // };
+  useEffect(() => {
+    setScore(scoreState);
+  }, [scoreState]);
+  useEffect(() => {
+    if (timer === 0) {
+      setModalLoseVisible(true);
+      setModalVisible(false);
+    }
+  }, [timer]);
   useEffect(() => {
     generateRandomImages();
-
+    // length();
     setTimeout(() => {
       setFlipped(true);
       setModalVisible(true);
     }, 2000);
   }, []);
+  // useEffect(() => {
+  //   console.log(length);
+  // }, [length]);
+  // console.log(data.length);
   const data2 = [
     {
       level: '1st',
@@ -138,7 +158,7 @@ const GameScreen = props => {
               color: '#FFB600',
               marginTop: 5,
             }}>
-            2432
+            {score}
           </Text>
         </View>
         <View
@@ -169,6 +189,32 @@ const GameScreen = props => {
             }}>
             {time}
           </Text> */}
+        </View>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row-reverse',
+
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            width: '35%',
+            height: 55,
+
+            marginEnd: 10,
+
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              fontFamily: 'LeagueSpartan-Bold',
+              color: 'white',
+              fontSize: 16,
+            }}>
+            Attempts Left : {attempts}
+          </Text>
         </View>
       </View>
       <View
@@ -218,7 +264,7 @@ const GameScreen = props => {
                         alignItems: 'center',
                         height: 110,
                         width: 110,
-                        // backgroundColor: 'white',
+                        backgroundColor: 'white',
                         //   borderRadius: 10,
                         //   margin: 4,
                         borderWidth: 5,
@@ -296,6 +342,7 @@ const GameScreen = props => {
       </View>
 
       <IconModal
+        dataLength={length}
         tilesImgs={data}
         visible={modalVisible}
         data={Carouseldata}
@@ -307,16 +354,21 @@ const GameScreen = props => {
           setModalLoseVisible(true);
           setModalVisible(false);
         }}
-        // onPressUp={() => {
-        //   setModalLoseVisible(true);
-        //   setModalVisible(false);
-        // }}
+        onPress={() => {
+          if (attempts > 0) {
+            setAttempts(prev => prev - 1);
+          }
+        }}
         // onPressDown={() => {
         //   setModalLoseVisible(true);
         //   setModalVisible(false);
         // }}
       />
       <WinModal
+        onPressWin={() => {
+          props.navigation.navigate('Main');
+          setModalWinVisible(false);
+        }}
         onPress={() => {
           props.navigation.goBack();
           setModalWinVisible(false);
@@ -325,8 +377,13 @@ const GameScreen = props => {
       />
       <LoseModal
         onPress={() => {
-          props.navigation.navigate('Main');
-          setModalLoseVisible(false);
+          if (timer === 0) {
+            props.navigation.navigation('Main');
+            setModalLoseVisible(false);
+          } else {
+            props.navigation.goBack();
+            setModalLoseVisible(false);
+          }
         }}
         visible={modalLoseVisible}
       />

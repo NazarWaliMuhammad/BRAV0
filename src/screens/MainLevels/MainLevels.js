@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -14,18 +14,94 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import PlaySound from '../../../assets/sound/pressSound';
 import SettingModal from '../../components/settingModal';
-import {MAIN_LEVLES} from '../../utils/services/GameServices/LevelUtils';
+
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from '../../components/Touchableopacity';
 import GameStartModal from '../../components/gameStartModal';
+import {useSelector} from 'react-redux';
+import {MAIN_BUNDLE} from 'react-native-sound';
 const MainScreen = props => {
   const {t, i18n} = useTranslation();
-
+  const [score, setScore] = useState(null);
   const [icon, setIcon] = useState(true);
   const [settingModal, setSettingModal] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [name, setName] = useState();
+  const [mainLvl, setMainLvl] = useState(1);
+  const main_level = useSelector(state => state.mainLevel);
+  const scoreState = useSelector(state => state.score);
+  useEffect(() => {
+    setScore(scoreState);
+  }, [scoreState]);
+  // const _getSubLevels = () => {
+  //   const tiles = [2, 3, 4, 5, 6, 7, 8, 9];
+  //   let sub_levels = [];
+  //   for (var a = 0; a < tiles.length; a++) {
+  //     sub_levels.push({
+  //       id: a + 1,
+  //       numTiles: tiles[a],
+  //     });
+  //   }
+  //   return sub_levels;
+  // };
+  useEffect(() => {
+    setMainLvl(main_level);
+    console.log(main_level);
+  }, [main_level]);
+  // const MAIN_LEVELS = [
+  //   {
+  //     id:1,
+  //     name:'Animals',
+  //     img:'',
+  //     isLocked:false,
+
+  //   }
+  // ]
+  // const filtered_sub_levels = SUB_LEVELS.filter(lvl => lvl.mainLevelId == )
+  // const SUB_LEVELS = [
+  //   {
+  //     id:1,
+  //     mainLevelId:1,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:2,
+  //     mainLevelId:2,
+  //     numTiles:3,
+
+  //   },   {
+  //     id:4,
+  //     mainLevelId:,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:01,
+  //     mainLevelId:01,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:01,
+  //     mainLevelId:01,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:01,
+  //     mainLevelId:01,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:01,
+  //     mainLevelId:01,
+  //     numTiles:2,
+
+  //   },   {
+  //     id:01,
+  //     mainLevelId:01,
+  //     numTiles:2,
+
+  //   }
+  // ]
   const data = [
     {
       level: '1st',
@@ -105,7 +181,7 @@ const MainScreen = props => {
               color: '#FFB600',
               marginTop: 5,
             }}>
-            2432
+            {scoreState}
           </Text>
         </View>
       </View>
@@ -132,13 +208,15 @@ const MainScreen = props => {
         renderItem={({item, index}) => {
           return (
             <Touchableopacity
-              disabled={item.isLocked}
+              disabled={mainLvl < index + 1 ? true : false}
               onPress={() => {
-                setName(item.name);
+                props.navigation.navigate('Sub', {
+                  name: item.name,
+                });
+
                 // props.navigation.navigate('Sub', {
                 //   name: item.name,
                 // });
-                setInfoModalVisible(true);
               }}
               style={{
                 alignSelf: 'center',
@@ -147,33 +225,58 @@ const MainScreen = props => {
                 margin: 8,
                 backgroundColor: 'white',
                 borderRadius: 15,
-                opacity: item.isLocked ? 0.5 : 1,
+                opacity: mainLvl < index + 1 ? 0.5 : 1,
               }}>
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: 180,
+                  width: '100%',
+                }}>
+                <View
                   style={{
-                    fontFamily: 'LeagueSpartan-SemiBold',
-                    fontSize: 18,
-                    marginTop: 10,
-                    color: '#00b200',
+                    // width: '100%',
+                    // height: 0,
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  {item.level}
-                </Text>
-                <Text
+                  <Text
+                    style={{
+                      fontFamily: 'LeagueSpartan-SemiBold',
+                      fontSize: 18,
+
+                      color: '#00b200',
+                    }}>
+                    {item.level}
+                  </Text>
+                </View>
+                <View
                   style={{
-                    fontFamily: 'LeagueSpartan-SemiBold',
-                    fontSize: 22,
-                    marginTop: 5,
-                    color: '#FFB600',
+                    // width: '100%',
+                    // height: 26,
+                    marginBottom: 3,
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  {t('Level')}
-                </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'LeagueSpartan-SemiBold',
+                      fontSize: 22,
+
+                      color: '#FFB600',
+                    }}>
+                    {t('Level')}
+                  </Text>
+                </View>
                 <ImageBackground
                   source={{
                     uri: 'https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png',
                   }}
-                  style={{width: 85, height: 88, marginTop: 6}}>
-                  {item.isLocked ? (
+                  style={{width: 85, height: 88}}>
+                  {mainLvl < index + 1 ? (
                     <Ionicons
                       style={{alignSelf: 'center'}}
                       name="lock-closed"
@@ -184,15 +287,25 @@ const MainScreen = props => {
                     ''
                   )}
                 </ImageBackground>
-                <Text
+                <View
                   style={{
-                    fontFamily: 'LeagueSpartan-SemiBold',
-                    fontSize: 15,
-                    color: '#00b200',
-                    marginTop: 8,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingVertical: 8,
+                    // width: '100%',
+                    // height: 25,
+                    alignSelf: 'center',
                   }}>
-                  {item.name}
-                </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'LeagueSpartan-SemiBold',
+                      fontSize: 15,
+                      color: '#00b200',
+                      // marginTop: 8,
+                    }}>
+                    {item.name}
+                  </Text>
+                </View>
               </View>
             </Touchableopacity>
           );
@@ -237,7 +350,7 @@ const MainScreen = props => {
           <Ionicons name="settings" size={40} color="#00b200" />
         </Touchableopacity>
       </View>
-      <GameStartModal
+      {/* <GameStartModal
         onPressStart={() => {
           setInfoModalVisible(false);
           props.navigation.navigate('Sub', {
@@ -248,7 +361,7 @@ const MainScreen = props => {
           setInfoModalVisible(false);
         }}
         visible={infoModalVisible}
-      />
+      /> */}
       <SettingModal
         onPressK={() => {
           setSettingModal(false);

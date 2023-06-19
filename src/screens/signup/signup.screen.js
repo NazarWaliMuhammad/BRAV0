@@ -8,9 +8,47 @@ import PlaySound from '../../../assets/sound/pressSound';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from '../../components/Touchableopacity';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+import {use} from 'i18next';
 const SignUpScreen = props => {
   const [icon, setIcon] = useState(true);
   const {t, i18n} = useTranslation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const signUp = () => {
+    setIsLoading(true);
+    auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        alert('Succesfully signed up!');
+        props.navigation.navigate('Home');
+        firestore()
+          .collection('gameRecord')
+          .doc(auth().currentUser.uid)
+          .set({userName: userName, score: 0, mainLevel: 1, subLevel: 1})
+          .then(() => {
+            console.log('User added!');
+          });
+
+        setIsLoading(false);
+      })
+      .catch(error => {
+        setIsLoading(false);
+        if (error.code === 'auth/email-already-in-use') {
+          alert('That email address is already in use!');
+        } else if (error.code === 'auth/invalid-email') {
+          alert('That email address is invalid!');
+        } else {
+          setIsLoading(false);
+          alert(error);
+        }
+      });
+  };
 
   return (
     // <View
@@ -21,6 +59,11 @@ const SignUpScreen = props => {
     //     // backgroundColor: '#00b200',
     //   }}>
     <AppBackground>
+      <Spinner
+        visible={isLoading}
+        textContent={'Loading...'}
+        textStyle={{color: '#FFF'}}
+      />
       <View style={{marginTop: 40}}>
         <Touchableopacity
           onPress={() => {
@@ -70,7 +113,7 @@ const SignUpScreen = props => {
             backgroundColor: 'white',
             borderRadius: 12,
             alignItems: 'center',
-            marginTop: 10,
+            // marginTop: 10,
           }}>
           <MaterialCommunityIcons
             style={{marginStart: 10}}
@@ -79,6 +122,11 @@ const SignUpScreen = props => {
             color="black"
           />
           <TextInput
+            autoCapitalize={false}
+            value={userName}
+            onChangeText={val => {
+              setUserName(val);
+            }}
             placeholder={t('Username')}
             style={{
               width: '80%',
@@ -90,7 +138,39 @@ const SignUpScreen = props => {
             placeholderTextColor="gray"
           />
         </View>
-
+        <View
+          style={{
+            width: '85%',
+            height: 55,
+            flexDirection: 'row',
+            backgroundColor: 'white',
+            borderRadius: 12,
+            alignItems: 'center',
+            marginTop: 20,
+          }}>
+          <MaterialCommunityIcons
+            style={{marginStart: 10}}
+            name="account-circle"
+            size={33}
+            color="black"
+          />
+          <TextInput
+            autoCapitalize={false}
+            value={email}
+            onChangeText={val => {
+              setEmail(val);
+            }}
+            placeholder={t('Email')}
+            style={{
+              width: '80%',
+              height: 55,
+              marginStart: 10,
+              fontFamily: 'LeagueSpartan-Bold',
+              fontSize: 19,
+            }}
+            placeholderTextColor="gray"
+          />
+        </View>
         <View
           style={{
             width: '85%',
@@ -111,6 +191,12 @@ const SignUpScreen = props => {
             />
 
             <TextInput
+              secureTextEntry={icon}
+              autoCapitalize={false}
+              value={password}
+              onChangeText={val => {
+                setPassword(val);
+              }}
               placeholder={t('Password')}
               style={{
                 width: '70%',
@@ -146,7 +232,9 @@ const SignUpScreen = props => {
         </View>
 
         <Touchableopacity
-          onPress={() => {}}
+          onPress={() => {
+            signUp();
+          }}
           style={{
             marginTop: 30,
             width: '85%',

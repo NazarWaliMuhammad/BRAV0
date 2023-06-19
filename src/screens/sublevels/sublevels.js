@@ -11,7 +11,7 @@ import {
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import PlaySound from '../../../assets/sound/pressSound';
 import SettingModal from '../../components/settingModal';
@@ -20,14 +20,23 @@ import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Timer from '../../components/Timer';
 import Touchableopacity from '../../components/Touchableopacity';
+import LoseModal from '../../components/loseModal';
+import {setTimer, setTimerState} from '../../../redux/Action/Action';
 
 // import {ANIMALS_IMGS} from '../../utils/services/GameServices/LevelUtils';
 const SubScreen = props => {
+  const dispatch = useDispatch();
+  const [isTimer, setIsTimer] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
   const [category, setCategory] = useState(null);
+  const [modalLoseVisible, setModalLoseVisible] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
-  const {t, i18n} = useTranslation();
-  const time = useSelector(state => state.time);
+  const [subLvl, setSubLvl] = useState(null);
+  const [score, setScore] = useState(null);
+  const sub_levels = useSelector(state => state.subLevel);
+  const timer = useSelector(state => state.time);
+  const scoreState = useSelector(state => state.score);
+  const timerState = useSelector(state => state.timerState);
   useEffect(() => {
     if (props.route.params.name === 'Animals') {
       setCategory([
@@ -54,115 +63,76 @@ const SubScreen = props => {
       ]);
     }
     if (props.route.params.name === 'People') {
-      // setCategory([
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/05/14/15/55/character-766935_1280.jpg',
-      //   },
-      // ]);
+      setCategory([
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
+      ]);
     }
     if (props.route.params.name === 'Sports') {
       setCategory([
-        'https://cdn.pixabay.com/photo/2013/07/13/10/51/football-157930_1280.png',
-        'https://cdn.pixabay.com/photo/2013/07/12/14/07/basketball-147794_1280.png',
-        'https://cdn.pixabay.com/photo/2012/04/18/23/18/dart-38220_1280.png',
-        'https://cdn.pixabay.com/photo/2012/04/05/01/45/baseball-25761_1280.png',
-        'https://cdn.pixabay.com/photo/2013/07/13/10/51/bowling-157933_1280.png',
-        'https://cdn.pixabay.com/photo/2016/06/14/15/01/vector-1456759_1280.png',
-        'https://cdn.pixabay.com/photo/2017/01/31/23/28/football-2028191_1280.png',
-        'https://cdn.pixabay.com/photo/2013/07/13/09/46/baseball-155990_1280.png',
-        'https://cdn.pixabay.com/photo/2017/03/18/16/20/chess-2154429_1280.png',
-        'https://cdn.pixabay.com/photo/2013/03/22/23/28/football-96041_1280.png',
-        'https://cdn.pixabay.com/photo/2017/01/31/23/30/motocross-2028197_1280.png',
-        'https://cdn.pixabay.com/photo/2018/02/24/23/01/engine-3179431_1280.png',
-        'https://cdn.pixabay.com/photo/2016/04/01/09/42/athletics-1299524_1280.png',
-        'https://cdn.pixabay.com/photo/2013/07/13/09/45/tennis-racket-155963_1280.png',
-        'https://cdn.pixabay.com/photo/2014/04/02/17/00/golf-307610_1280.png',
-        'https://cdn.pixabay.com/photo/2017/01/31/15/31/tennis-2025095_1280.png',
-        'https://cdn.pixabay.com/photo/2012/04/05/01/48/volleyball-25782_1280.png',
-        'https://cdn.pixabay.com/photo/2013/07/13/09/41/petanque-155945_1280.png',
-        'https://cdn.pixabay.com/photo/2019/02/15/02/49/graphic-3997741_1280.png',
-        'https://cdn.pixabay.com/photo/2012/04/14/13/10/football-33864_1280.png',
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
       ]);
     }
     if (props.route.params.name === 'Fantasy Forms 1') {
-      // setCategory([
+      setCategory([
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
+      ]);
       //   {
       //     image:
       //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
@@ -246,7 +216,28 @@ const SubScreen = props => {
       // ]);
     }
     if (props.route.params.name === 'Fantasy Forms 2') {
-      // setCategory([
+      setCategory([
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
+      ]);
       //   {
       //     image:
       //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
@@ -330,7 +321,28 @@ const SubScreen = props => {
       // ]);
     }
     if (props.route.params.name === 'Fantasy Forms 3') {
-      // setCategory([
+      setCategory([
+        require('../../../assets/image/animal_01.png'),
+        require('../../../assets/image/animal_02.png'),
+        require('../../../assets/image/animal_03.png'),
+        require('../../../assets/image/animal_04.png'),
+        require('../../../assets/image/animal_05.png'),
+        require('../../../assets/image/animal_06.png'),
+        require('../../../assets/image/animal_07.png'),
+        require('../../../assets/image/animal_08.png'),
+        require('../../../assets/image/animal_09.png'),
+        require('../../../assets/image/animal_10.png'),
+        require('../../../assets/image/animal_11.png'),
+        require('../../../assets/image/animal_12.png'),
+        require('../../../assets/image/animal_13.png'),
+        require('../../../assets/image/animal_14.png'),
+        require('../../../assets/image/animal_15.png'),
+        require('../../../assets/image/animal_16.png'),
+        require('../../../assets/image/animal_17.png'),
+        require('../../../assets/image/animal_18.png'),
+        require('../../../assets/image/animal_19.png'),
+        require('../../../assets/image/animal_20.png'),
+      ]);
       //   {
       //     image:
       //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
@@ -414,6 +426,21 @@ const SubScreen = props => {
       // ]);
     }
   }, []);
+  useEffect(() => {
+    setIsTimer(timerState);
+  }, [timerState]);
+  useEffect(() => {
+    if (timer === 0) {
+      setModalLoseVisible(true);
+    }
+  }, [timer]);
+  useEffect(() => {
+    setScore(scoreState);
+  }, [scoreState]);
+  useEffect(() => {
+    setSubLvl(sub_levels);
+    console.log(sub_levels);
+  }, [sub_levels]);
   // console.log(category);
 
   // // }, 2000);
@@ -431,10 +458,11 @@ const SubScreen = props => {
       color: '#88CCEE',
       difficulty: 'Begginer',
       onPress: () => {
-        props.navigation.navigate('Game', {
-          data: category,
-          tiles: 2,
-        });
+        setInfoModalVisible(true);
+        // props.navigation.navigate('Game', {
+        //   data: category,
+        //   tiles: 2,
+        // });
       },
       img: require('../../../assets/image/level01.png'),
       isLocked: false,
@@ -531,7 +559,7 @@ const SubScreen = props => {
       difficulty: 'Master',
 
       onPress: () => {
-        props.navigation.navigate('Game', {
+        props.navigation.replace('Game', {
           data: category,
           tiles: 7,
         });
@@ -551,7 +579,7 @@ const SubScreen = props => {
       difficulty: 'Prodigy',
 
       onPress: () => {
-        props.navigation.navigate('Game', {
+        props.navigation.replace('Game', {
           data: category,
           tiles: 8,
         });
@@ -618,7 +646,7 @@ const SubScreen = props => {
               color: 'white',
               marginTop: 5,
             }}>
-            2432
+            {score}
           </Text>
         </View>
       </View>
@@ -676,7 +704,20 @@ const SubScreen = props => {
             alignItems: 'center',
             flexDirection: 'row',
           }}>
-          <Timer />
+          {timerState ? (
+            <Timer />
+          ) : (
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: 'LeagueSpartan-SemiBold',
+                color: 'white',
+                marginTop: 5,
+                textAlign: 'center',
+              }}>
+              Start
+            </Text>
+          )}
 
           {/* <Text
             style={{
@@ -697,7 +738,7 @@ const SubScreen = props => {
         renderItem={({item, index}) => {
           return (
             <Touchableopacity
-              disabled={item.isLocked}
+              disabled={subLvl < index + 1 ? true : false}
               onPress={item.onPress}
               style={{
                 alignSelf: 'center',
@@ -708,7 +749,7 @@ const SubScreen = props => {
                 borderRadius: 15,
                 alignItems: 'center',
                 justifyContent: 'center',
-                opacity: item.isLocked ? 0.5 : 1,
+                opacity: subLvl < index + 1 ? 0.5 : 1,
               }}>
               <View
                 style={{
@@ -726,7 +767,7 @@ const SubScreen = props => {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  {item.isLocked ? (
+                  {subLvl < index + 1 ? (
                     <Ionicons
                       style={{alignSelf: 'center'}}
                       name="lock-closed"
@@ -790,6 +831,33 @@ const SubScreen = props => {
           <Ionicons name="settings" size={40} color="#00b200" />
         </Touchableopacity>
       </View>
+      <GameStartModal
+        onPressStart={() => {
+          dispatch(setTimerState(true));
+          setInfoModalVisible(false);
+          props.navigation.navigate('Game', {
+            data: category,
+            tiles: 2,
+          });
+        }}
+        onPressCancel={() => {
+          setInfoModalVisible(false);
+        }}
+        visible={infoModalVisible}
+      />
+      <LoseModal
+        onPress={() => {
+          if (timer === 0) {
+            props.navigation.navigation('Main');
+            setModalLoseVisible(false);
+            dispatch(setTimerState(false));
+          } else {
+            props.navigation.goBack();
+            setModalLoseVisible(false);
+          }
+        }}
+        visible={modalLoseVisible}
+      />
       <SettingModal
         onPressK={() => {
           setSettingModal(false);

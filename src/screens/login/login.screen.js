@@ -13,6 +13,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import PlaySound from '../../../assets/sound/pressSound';
 import {useTranslation} from 'react-i18next';
 import auth from '@react-native-firebase/auth';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import AppBackground from '../../components/appBackground ';
 import Touchableopacity from '../../components/Touchableopacity';
@@ -20,24 +21,25 @@ const loginScreen = props => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [icon, setIcon] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const {t, i18n} = useTranslation();
   const login = () => {
     if (email.length === 0 || password.length === 0) {
       alert('Please enter Email and Password');
     } else {
-      // setIsLoading(true);
+      setIsLoading(true);
       auth()
         .signInWithEmailAndPassword(email, password)
         .then(() => {
-          alert('User account signed in!');
-          navigation.navigate('Home');
-          // setIsLoading(false);
+          props.navigation.navigate('Home');
+          setIsLoading(false);
         })
         .catch(error => {
-          // setIsLoading(false);
+          setIsLoading(false);
           if (error.code === 'auth/invalid-email') {
             alert('That email address is invalid!');
           } else {
+            setIsLoading(false);
             alert(error.code);
           }
         });
@@ -45,6 +47,11 @@ const loginScreen = props => {
   };
   return (
     <AppBackground>
+      <Spinner
+        visible={isLoading}
+        textContent={'Loading...'}
+        textStyle={{color: '#FFF'}}
+      />
       <View
         style={{
           width: '100%',
@@ -106,16 +113,17 @@ const loginScreen = props => {
           }}>
           <MaterialCommunityIcons
             style={{marginStart: 10}}
-            name="alphabet-latin"
+            name="account-circle"
             size={33}
             color="black"
           />
           <TextInput
+            autoCapitalize={false}
             value={email}
             onChangeText={val => {
               setEmail(val);
             }}
-            placeholder={t('Username')}
+            placeholder={t('Email')}
             style={{
               width: '80%',
               height: 55,
@@ -146,6 +154,8 @@ const loginScreen = props => {
             />
 
             <TextInput
+              secureTextEntry={icon}
+              autoCapitalize={false}
               value={password}
               onChangeText={val => {
                 setPassword(val);
@@ -186,8 +196,8 @@ const loginScreen = props => {
 
         <Touchableopacity
           onPress={() => {
-            props.navigation.navigate('Home');
-            // login();
+            // props.navigation.navigate('Home');
+            login();
           }}
           style={{
             marginTop: 30,

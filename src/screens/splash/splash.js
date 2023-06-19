@@ -14,18 +14,26 @@ import {useTranslation} from 'react-i18next';
 import AppBackground from '../../components/appBackground ';
 import WinModal from '../../components/WinModal';
 import LoseModal from '../../components/loseModal';
-
+import auth from '@react-native-firebase/auth';
 const SplashScreen = props => {
   const {i18n} = useTranslation();
   // const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
+
   useEffect(() => {
     const getLang = async () => {
+      AsyncStorage.setItem('SETTING_SOUND', 'true');
       const lang = await AsyncStorage.getItem('Selected_Language');
       i18n.changeLanguage(lang);
     };
     getLang();
     setTimeout(() => {
-      props.navigation.navigate('Login');
+      auth().onAuthStateChanged(user => {
+        if (user) {
+          props.navigation.navigate('Home');
+        } else {
+          props.navigation.navigate('Login');
+        }
+      });
     }, 2000);
   }, []);
   return (

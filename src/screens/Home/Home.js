@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -16,9 +16,38 @@ import PlaySound from '../../../assets/sound/pressSound';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from '../../components/Touchableopacity';
+import firestore from '@react-native-firebase/firestore';
+import {useDispatch} from 'react-redux';
+import auth from '@react-native-firebase/auth';
+import {
+  setMainlevel,
+  setScore,
+  setSublevel,
+  setUserName,
+} from '../../../redux/Action/Action';
 const HomeScreen = props => {
   const {t, i18n} = useTranslation();
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const getData = async () => {
+      const user = await firestore()
+        .collection('gameRecord')
+        .doc(auth().currentUser.uid)
+        .get();
+      // const extractedData = user.map(item => {
+      //   return item;
+      // });
+      dispatch(setMainlevel(user._data.mainLevel));
+      dispatch(setSublevel(user._data.subLevel));
+      dispatch(setUserName(user._data.userName));
+      dispatch(setScore(user._data.score));
+      console.log(user._data.mainLevel);
+      console.log(user._data.subLevel);
+      console.log(user._data.userName);
+      console.log(user._data.score);
+    };
+    getData();
+  }, []);
   const data = [
     {
       level: '1st',

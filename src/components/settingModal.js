@@ -9,12 +9,14 @@ import {
   Dimensions,
   Picker,
 } from 'react-native';
-import Carousel from 'react-native-reanimated-carousel';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PlaySound from '../../assets/sound/pressSound';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from './Touchableopacity';
+import {useDispatch, useSelector} from 'react-redux';
+import {setSound, setTimer} from '../../redux/Action/Action';
 
 const SettingModal = props => {
   const [soundIcon, setSoundIcon] = useState(true);
@@ -23,18 +25,30 @@ const SettingModal = props => {
   const {t, i18n} = useTranslation();
   const [applangauge, setAppLanguage] = useState(null);
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
-
+  const dispatch = useDispatch();
+  const SOUND = useSelector(state => state.sound);
   const handleChangeLanguage = async () => {
     i18n.changeLanguage(applangauge);
     setSelectedLanguage(applangauge);
     await AsyncStorage.setItem('Selected_Language', applangauge);
   };
 
+  const handleSound = () => {};
+  useEffect(() => {
+    dispatch(setSound(soundIcon));
+    if (SOUND === true) {
+      setSoundIcon(true);
+    } else {
+      setSoundIcon(false);
+    }
+  }, [soundIcon]);
   useEffect(() => {
     if (i18n.language === 'en') {
+      setAppLanguage('en');
       setIsSelected(true);
     } else {
       setIsSelected(false);
+      setAppLanguage('it');
     }
   }, []);
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
@@ -56,6 +70,7 @@ const SettingModal = props => {
   //       </View>
   //     );
   //   };
+
   return (
     <Modal transparent={true} visible={props.visible}>
       <View
@@ -75,19 +90,28 @@ const SettingModal = props => {
             borderWidth: 3,
             borderColor: '#FFB600',
           }}>
-          <Text
+          <View
             style={{
-              fontFamily: 'LeagueSpartan-Bold',
-              fontSize: 50,
-              color: '#00b200',
-              marginTop: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: 100,
             }}>
-            {t('Settings')}
-          </Text>
+            <Text
+              style={{
+                fontFamily: 'LeagueSpartan-Bold',
+                fontSize: 50,
+                color: '#00b200',
+                // marginTop: 30,
+              }}>
+              {t('Settings')}
+            </Text>
+          </View>
           <View
             style={{
               width: '100%',
-              height: 270,
+              height: 200,
+              // padding: 20,
               alignSelf: 'center',
               justifyContent: 'center',
             }}>
@@ -106,7 +130,7 @@ const SettingModal = props => {
                 style={{
                   marginStart: 10,
                   fontFamily: 'LeagueSpartan-SemiBold',
-                  fontSize: 30,
+                  fontSize: 26,
                   color: '#FFB600',
                 }}>
                 Sound
@@ -116,10 +140,10 @@ const SettingModal = props => {
                 onPress={() => {
                   setSoundIcon(prev => !prev);
                 }}>
-                {soundIcon ? (
-                  <FontAwesome5 name="toggle-on" size={34} color="green" />
+                {SOUND ? (
+                  <FontAwesome5 name="toggle-on" size={32} color="green" />
                 ) : (
-                  <FontAwesome5 name="toggle-off" size={34} color="red" />
+                  <FontAwesome5 name="toggle-off" size={32} color="red" />
                 )}
               </Touchableopacity>
             </View>
@@ -138,7 +162,7 @@ const SettingModal = props => {
                 style={{
                   marginStart: 10,
                   fontFamily: 'LeagueSpartan-SemiBold',
-                  fontSize: 30,
+                  fontSize: 26,
                   color: '#FFB600',
                 }}>
                 {t('Music')}
@@ -162,13 +186,13 @@ const SettingModal = props => {
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                paddingTop: 20,
+                paddingTop: 8,
               }}>
               <Text
                 style={{
                   marginStart: 10,
                   fontFamily: 'LeagueSpartan-SemiBold',
-                  fontSize: 30,
+                  fontSize: 26,
                   color: '#FFB600',
                 }}>
                 {t('Language')}
@@ -215,12 +239,14 @@ const SettingModal = props => {
             style={{
               flexDirection: 'row',
               width: '100%',
-              height: 130,
+              height: 100,
               justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
             <Touchableopacity
               onPress={() => {
-                setIsSelected(prev => !prev);
+                setSoundIcon(true);
+                setIsSelected(true);
                 props.onPressC();
               }}
               style={{
@@ -245,6 +271,7 @@ const SettingModal = props => {
 
             <Touchableopacity
               onPress={() => {
+                handleSound();
                 handleChangeLanguage();
                 props.onPressK();
               }}
