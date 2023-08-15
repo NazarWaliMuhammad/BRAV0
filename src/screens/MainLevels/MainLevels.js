@@ -7,20 +7,28 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  StyleSheet,
+  ScrollView,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import Entypo from 'react-native-vector-icons/Entypo';
 import PlaySound from '../../../assets/sound/pressSound';
 import SettingModal from '../../components/settingModal';
-
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from '../../components/Touchableopacity';
 import GameStartModal from '../../components/gameStartModal';
-import {useSelector} from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
+import {useDispatch, useSelector} from 'react-redux';
 import {MAIN_BUNDLE} from 'react-native-sound';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+import {setMainIndex, setMainLvlName} from '../../../redux/Action/Action';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 const MainScreen = props => {
   const {t, i18n} = useTranslation();
   const [score, setScore] = useState(null);
@@ -31,6 +39,12 @@ const MainScreen = props => {
   const [mainLvl, setMainLvl] = useState(1);
   const main_level = useSelector(state => state.mainLevel);
   const scoreState = useSelector(state => state.score);
+  const LvlName = useSelector(state => state.name);
+  const mainLevelCompleted = useSelector(state => state.mainLvlCmplt);
+
+  // const cmP = useSelector(state => state.gameCompletion);
+
+  const dispatch = useDispatch();
   useEffect(() => {
     setScore(scoreState);
   }, [scoreState]);
@@ -106,37 +120,37 @@ const MainScreen = props => {
     {
       level: '1st',
       name: 'Animals',
-      img: '../../../assets/image/animal01.png',
+      img: require('../../../assets/image/animal_08.png'),
       isLocked: false,
     },
     {
       level: '2nd',
       name: 'People',
-      img: '',
+      img: require('../../../assets/image/people_01.png'),
       isLocked: true,
     },
     {
       level: '3rd',
       name: 'Sports',
-      img: '',
+      img: require('../../../assets/image/sports_01.png'),
       isLocked: true,
     },
     {
       level: '4th',
-      name: 'Fantasy Forms 1',
-      img: '',
+      name: 'Fantasy 1',
+      img: require('../../../assets/image/ff1_01.png'),
       isLocked: true,
     },
     {
       level: '5th',
-      name: 'Fantasy Forms 2',
-      img: '',
+      name: 'Fantasy 2',
+      img: require('../../../assets/image/ff2_01.png'),
       isLocked: true,
     },
     {
       level: '6th',
-      name: 'Fantasy Forms 3',
-      img: '',
+      name: 'Fantasy 3',
+      img: require('../../../assets/image/ff3_01.png'),
       isLocked: true,
     },
   ];
@@ -149,208 +163,271 @@ const MainScreen = props => {
     //     backgroundColor: '#00b200',
     //   }}>
     <AppBackground>
-      <View
-        style={{
-          flexDirection: 'row-reverse',
-          marginTop: 40,
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: '35%',
-            height: 55,
-            backgroundColor: 'white',
-            marginEnd: 10,
-            borderRadius: 15,
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
+            flexGrow: 1,
           }}>
-          <Text
+          <View
             style={{
-              fontSize: 16,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#00b200',
-              textAlign: 'center',
+              flexDirection: 'row-reverse',
+              marginTop: 40,
+              alignItems: 'center',
+              width: '100%',
+              // justifyContent: 'space-between',s
             }}>
-            {t('ScoreBoard')}
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#FFB600',
-              marginTop: 5,
-            }}>
-            {scoreState}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          height: 130,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text
+            <View
+              style={{
+                width: '30%',
+                height: 40,
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                marginEnd: 10,
+                borderRadius: 15,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+              }}>
+              <AntDesign name="star" size={24} color="#FFB600" />
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  color: 'white',
+                  // marginTop: 5,
+                }}>
+                {score}
+              </Text>
+            </View>
+            {/* <Touchableopacity
+          onPress={() => {
+            props.navigation.navigate('Scoreboard');
+          }}
           style={{
-            fontSize: 40,
-            fontFamily: 'LeagueSpartan-SemiBold',
-            color: 'white',
-          }}>
-          {t('Main Levels')}
-        </Text>
-      </View>
-      <FlatList
-        style={{alignSelf: 'center'}}
-        data={data}
-        numColumns={3}
-        renderItem={({item, index}) => {
-          return (
-            <Touchableopacity
-              disabled={mainLvl < index + 1 ? true : false}
-              onPress={() => {
-                props.navigation.navigate('Sub', {
-                  name: item.name,
-                });
+            width: 120,
+            height: 50,
+            // borderRadius: 10,
+            marginTop: 10,
 
-                // props.navigation.navigate('Sub', {
-                //   name: item.name,
-                // });
+            marginStart: 10,
+            backgroundColor: '#FFB600',
+            justifyContent: 'center',
+            alignItems: 'center',
+            // flexDirection: 'row',
+            borderRadius: 15,
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontFamily: 'LeagueSpartan-SemiBold',
+              color: 'white',
+              fontSize: 18,
+              // marginStart: 7,
+              // mar,
+            }}>
+            Scoreboard
+          </Text>
+        </Touchableopacity> */}
+          </View>
+          <View
+            style={{
+              width: '100%',
+              height: 130,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 40,
+                fontFamily: 'LeagueSpartan-SemiBold',
+                color: 'white',
+              }}>
+              {t('Main Levels')}
+            </Text>
+          </View>
+          <FlatList
+            style={{alignSelf: 'center', marginTop: 30}}
+            data={data}
+            numColumns={3}
+            renderItem={({item, index}) => {
+              return (
+                <Touchableopacity
+                  disabled={mainLvl < index + 1 ? true : false}
+                  onPress={() => {
+                    dispatch(setMainLvlName(item.name));
+                    props.navigation.navigate('Sub');
+                    dispatch(setMainIndex(index + 1));
+                    // props.navigation.navigate('Sub', {
+                    //   name: item.name,
+                    // });
+                  }}
+                  style={{
+                    alignSelf: 'center',
+                    width: '29%',
+                    height: 155,
+                    margin: 8,
+                    // backgroundColor: 'white',
+                    borderRadius: 15,
+                    opacity: mainLvl < index + 1 ? 0.5 : 1,
+                    // borderWidth: 1,
+                    // borderColor: '#FFB600',
+                  }}>
+                  <View
+                    style={{
+                      justifyContent: 'center',
+                      alignItems: 'center',
+
+                      // height: 200,
+                      // width: '100%',
+                    }}>
+                    {/* <View
+                  style={{
+                    // width: '100%',
+                    // height: 20,
+                    // alignSelf: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}> */}
+
+                    {/* </View> */}
+                    {/* <View
+                  style={{
+                    width: '100%',
+                    
+                    // marginBottom: 3,
+                    // alignSelf: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}> */}
+
+                    {/* </View> */}
+                    <ImageBackground
+                      imageStyle={{
+                        borderRadius: 15,
+                        borderWidth: 3,
+                        borderColor: 'white',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      source={item.img}
+                      style={{
+                        width: 100,
+                        height: 100,
+                      }}>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: 'rgba(0,0,0,0,0.6)',
+                        }}>
+                        {mainLevelCompleted.includes(index + 1) ? (
+                          <Entypo name="check" color="#0bda51" size={50} />
+                        ) : (
+                          ''
+                        )}
+                        {mainLvl < index + 1 ? (
+                          <Ionicons
+                            style={{alignSelf: 'center', paddingTop: 10}}
+                            name="lock-closed"
+                            size={50}
+                            color="black"
+                          />
+                        ) : (
+                          ''
+                        )}
+                      </View>
+                    </ImageBackground>
+                    {/* <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    // paddingVertical: 8,
+                    width: '100%',
+                    alignSelf: 'center',
+                  }}> */}
+                    <Text
+                      style={{
+                        fontFamily: 'LeagueSpartan-Black',
+                        fontSize: 22,
+                        color: 'white',
+                        textAlign: 'center',
+                        // marginTop: 8,
+                        paddingTop: 10,
+                      }}>
+                      {item.name}
+                    </Text>
+                    {/* </View> */}
+                  </View>
+                </Touchableopacity>
+              );
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: 40,
+              width: '100%',
+            }}>
+            <Touchableopacity
+              // disabled={subLvl < index + 1 ? true : false}
+              onPress={() => {
+                props.navigation.goBack();
               }}
               style={{
-                alignSelf: 'center',
-                width: '29%',
-                height: 180,
-                margin: 8,
-                backgroundColor: 'white',
-                borderRadius: 15,
-                opacity: mainLvl < index + 1 ? 0.5 : 1,
+                width: 60,
+                height: 60,
+                borderRadius: 40,
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 10,
+                opacity: 1,
               }}>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: 180,
-                  width: '100%',
-                }}>
-                <View
-                  style={{
-                    // width: '100%',
-                    // height: 0,
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'LeagueSpartan-SemiBold',
-                      fontSize: 18,
-
-                      color: '#00b200',
-                    }}>
-                    {item.level}
-                  </Text>
-                </View>
-                <View
-                  style={{
-                    // width: '100%',
-                    // height: 26,
-                    marginBottom: 3,
-                    alignSelf: 'center',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'LeagueSpartan-SemiBold',
-                      fontSize: 22,
-
-                      color: '#FFB600',
-                    }}>
-                    {t('Level')}
-                  </Text>
-                </View>
-                <ImageBackground
-                  source={{
-                    uri: 'https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png',
-                  }}
-                  style={{width: 85, height: 88}}>
-                  {mainLvl < index + 1 ? (
-                    <Ionicons
-                      style={{alignSelf: 'center'}}
-                      name="lock-closed"
-                      size={85}
-                      color="red"
-                    />
-                  ) : (
-                    ''
-                  )}
-                </ImageBackground>
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    paddingVertical: 8,
-                    // width: '100%',
-                    // height: 25,
-                    alignSelf: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontFamily: 'LeagueSpartan-SemiBold',
-                      fontSize: 15,
-                      color: '#00b200',
-                      // marginTop: 8,
-                    }}>
-                    {item.name}
-                  </Text>
-                </View>
-              </View>
+              <LinearGradient
+                colors={['#FF9800', '#FF5722']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+                style={styles.gradient}>
+                <Ionicons name="arrow-back" size={40} color="white" />
+                {/* <Ionicons
+              style={{alignSelf: 'center'}}
+              name="lock-closed"
+              size={50}
+              color="white"
+            /> */}
+              </LinearGradient>
             </Touchableopacity>
-          );
-        }}
-      />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flex: 1,
-          marginBottom: 40,
-        }}>
-        <Touchableopacity
-          onPress={() => {
-            props.navigation.goBack();
-          }}
-          style={{
-            width: 70,
-            height: 70,
-            borderRadius: 40,
-            margin: 10,
-            backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Ionicons name="arrow-back" size={40} color="#00b200" />
-        </Touchableopacity>
-        <Touchableopacity
-          onPress={() => {
-            setSettingModal(true);
-          }}
-          style={{
-            width: 70,
-            height: 70,
-            borderRadius: 40,
-            margin: 10,
-            backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Ionicons name="settings" size={40} color="#00b200" />
-        </Touchableopacity>
-      </View>
-      {/* <GameStartModal
+            <Touchableopacity
+              // disabled={subLvl < index + 1 ? true : false}
+              onPress={() => {
+                // props.navigation.goBack();
+                setSettingModal(true);
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 40,
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 10,
+                opacity: 1,
+              }}>
+              <LinearGradient
+                colors={['#FF9800', '#FF5722']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+                style={styles.gradient}>
+                <Ionicons name="settings" size={40} color="white" />
+              </LinearGradient>
+            </Touchableopacity>
+          </View>
+          {/* <GameStartModal
         onPressStart={() => {
           setInfoModalVisible(false);
           props.navigation.navigate('Sub', {
@@ -362,17 +439,50 @@ const MainScreen = props => {
         }}
         visible={infoModalVisible}
       /> */}
-      <SettingModal
-        onPressK={() => {
-          setSettingModal(false);
-        }}
-        visible={settingModal}
-        onPressC={() => {
-          setSettingModal(false);
-        }}
-      />
+          <SettingModal
+            onPressLogOut={() => {
+              props.navigation.navigate('Login');
+              setSettingModal(false);
+            }}
+            onPressK={() => {
+              setSettingModal(false);
+            }}
+            visible={settingModal}
+            onPressC={() => {
+              setSettingModal(false);
+            }}
+          />
+        </ScrollView>
+      </GestureHandlerRootView>
     </AppBackground>
   );
 };
-
+const styles = StyleSheet.create({
+  button: {
+    width: 100,
+    height: 100,
+    borderRadius: 60,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+  },
+  gradient: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  levelText: {
+    fontSize: 50,
+    color: '#FFF',
+    fontWeight: '900',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+});
 export default MainScreen;

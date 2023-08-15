@@ -1,6 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, Image, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {
+  FlatList,
+  Image,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from 'react-native';
 import IconModal from './iconModal';
+import Entypo from 'react-native-vector-icons/Entypo';
 import PlaySound from '../../../assets/sound/pressSound';
 import FlipCard from 'react-native-flip-card';
 import GameStartModal from '../../components/gameStartModal';
@@ -9,24 +17,61 @@ import {useSelector, useDispatch} from 'react-redux';
 import {useTranslation} from 'react-i18next';
 import Timer from '../../components/Timer';
 import Touchableopacity from '../../components/Touchableopacity';
-import LoseModal from '../../components/loseModal';
+import LoseModal from './loseModal';
 import WinModal from '../../components/WinModal';
+import {
+  setTimerState,
+  setTimerPlaying,
+  setTimer,
+} from '../../../redux/Action/Action';
+import GiveUpModal from '../../components/giveUpModal';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import GreetingModal from '../../components/greeting';
+import {
+  // Gesture,
+  GestureHandlerRootView,
+  // ScrollView,
+} from 'react-native-gesture-handler';
+import GameReset from '../../components/gameReset';
+import CardShowing from '../../components/cardShowing';
 
 const GameScreen = props => {
   const {t, i18n} = useTranslation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalGiveUpVisible, setModalGiveUpVisible] = useState(false);
   const [modalLoseVisible, setModalLoseVisible] = useState(false);
   const [modalWinVisible, setModalWinVisible] = useState(false);
+  const [modalGreetingVisible, setModalGreetingVisible] = useState(false);
+  const [modalGameResetVisible, setModalGameResetVisible] = useState(false);
+  const [cardShowingVisible, setCardShowingVisible] = useState(false);
   const [length, setLength] = useState(null);
   const [score, setScore] = useState(null);
-  const timer = useSelector(state => state.time);
   const scoreState = useSelector(state => state.score);
+  // const index = useSelector(state => state.score);
+  const index = useSelector(state => state.index);
+  const time = useSelector(state => state.time);
+
+  const mainLevel = useSelector(state => state.mainLevel);
+  const [sublvlState, setSubLvlState] = useState();
+
+  const sublvl1 = useSelector(state => state.subLevel1);
+  const sublvl2 = useSelector(state => state.subLevel2);
+  const sublvl3 = useSelector(state => state.subLevel3);
+  const sublvl4 = useSelector(state => state.subLevel4);
+  const sublvl5 = useSelector(state => state.subLevel5);
+  const sublvl6 = useSelector(state => state.subLevel6);
+  // const subLevel = useSelector(state => state.subLevel);
+  const subLevelCompleted = useSelector(state => state.subLvlCmplt);
   const dispatch = useDispatch();
   const [data, setData] = useState(null);
   const [flipped, setFlipped] = useState(false);
   const numTiles = props.route.params.tiles;
   const Carouseldata = props.route.params.data;
+  const flipTimer = props.route.params.flipTime;
+  const lvl = props.route.params.lvl;
+  const mainIndex = useSelector(state => state.mainIndex);
   const [attempts, setAttempts] = useState();
+
   // const [Carouseldata, setCarouseldata] = us  eState(props.route.params.data);
   const generateRandomImages = async () => {
     let randomImg = [];
@@ -44,349 +89,390 @@ const GameScreen = props => {
     setLength(randomImg.length);
     setAttempts(randomImg.length);
   };
-  // const length = async () => {
-  //   const dataLength = await data.length;
-  //   console.log(dataLength);
-  // };
+
   useEffect(() => {
     setScore(scoreState);
   }, [scoreState]);
+
   useEffect(() => {
-    if (timer === 0) {
+    if (time === 0) {
       setModalLoseVisible(true);
       setModalVisible(false);
+      dispatch(setTimer(50));
+      dispatch(setTimerPlaying(false));
     }
-  }, [timer]);
+  }, [time]);
+  // useEffect(() => {
+  //   if (mainIndex === 1) {
+  //     setSubLvlState(1);
+  //   } else if (mainIndex === 2) {
+  //     setSubLvlState(2);
+  //   } else if (mainIndex === 3) {
+  //     setSubLvlState(3);
+  //   } else if (mainIndex === 4) {
+  //     setSubLvlState(4);
+  //   } else if (mainIndex === 5) {
+  //     setSubLvlState(5);
+  //   } else if (mainIndex === 6) {
+  //     setSubLvlState(6);
+  //   }
+  // }, [mainIndex]);
+  useEffect(() => {
+    if (index === 1) {
+      setSubLvlState(1);
+    } else if (index === 2) {
+      setSubLvlState(2);
+    } else if (index === 3) {
+      setSubLvlState(3);
+    } else if (index === 4) {
+      setSubLvlState(4);
+    } else if (index === 5) {
+      setSubLvlState(5);
+    } else if (index === 6) {
+      setSubLvlState(6);
+    } else if (index === 7) {
+      setSubLvlState(7);
+    } else if (index === 8) {
+      setSubLvlState(8);
+    }
+  }, [index]);
+  // useEffect(() => {
+  //   if (timer === 0) {
+  //     setModalLoseVisible(true);
+  //     setModalVisible(false);
+  //   }
+  // }, [timer]);
   useEffect(() => {
     generateRandomImages();
+    // setModalGreetingVisible(true);
     // length();
     setTimeout(() => {
       setFlipped(true);
+      dispatch(setTimerPlaying(true));
       setModalVisible(true);
-    }, 2000);
+    }, flipTimer);
   }, []);
-  // useEffect(() => {
-  //   console.log(length);
-  // }, [length]);
-  // console.log(data.length);
-  const data2 = [
-    {
-      level: '1st',
-      name: 'Animals',
-      img: 'https://cdn.pixabay.com/photo/2013/07/13/13/14/tiger-160601_1280.png',
-    },
-    {
-      level: '2nd',
-      name: 'People',
-      img: 'https://cdn.pixabay.com/photo/2022/03/24/16/30/gardener-7089417_1280.png',
-    },
-    {
-      level: '3rd',
-      name: 'Sports',
-      img: 'https://cdn.pixabay.com/photo/2013/07/13/10/51/football-157930_1280.png',
-    },
-    {
-      level: '4th',
-      name: 'Fantasy Forms 1',
-      img: 'https://cdn.pixabay.com/photo/2019/02/19/16/53/rock-4007203_1280.png',
-    },
-    {
-      level: '5th',
-      name: 'Fantasy Forms 2',
-      img: 'https://cdn.pixabay.com/photo/2021/02/07/19/37/drawing-5992475_1280.png',
-    },
-    {
-      level: '6th',
-      name: 'Fantasy Forms 3',
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-    },
-    {
-      level: '6th',
-      name: 'Fantasy Forms 3',
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-    },
-    {
-      level: '6th',
-      name: 'Fantasy Forms 3',
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-    },
-    {
-      level: '6th',
-      name: 'Fantasy Forms 3',
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-    },
-  ];
+
   return (
-    // <View
-    //   style={{
-    //     flex: 1,
-    //     // justifyContent: 'center',
-    //     // alignItems: 'center',
-    //     backgroundColor: '#00b200',
-    //   }}>
     <AppBackground>
-      <View
-        style={{
-          flexDirection: 'row-reverse',
-          marginTop: 45,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <View
-          style={{
-            width: '35%',
-            height: 55,
-            backgroundColor: 'white',
-            marginEnd: 10,
-            borderRadius: 15,
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
             alignItems: 'center',
             justifyContent: 'center',
+            flexGrow: 1,
           }}>
-          <Text
+          <View
             style={{
-              fontSize: 16,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#00b200',
-              textAlign: 'center',
+              flexDirection: 'row',
+              height: 90,
+              // marginTop: 25,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor: 'rgba(48, 16, 107, 0.5)',
+              width: '100%',
             }}>
-            {t('ScoreBoard')}
-          </Text>
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#FFB600',
-              marginTop: 5,
-            }}>
-            {score}
-          </Text>
-        </View>
-        <View
-          style={{
-            width: '35%',
-            height: 55,
-            backgroundColor: 'whit',
-            marginStart: 10,
-            borderRadius: 15,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 18,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#00b200',
-            }}>
-            {t('Time Remaining')}
-          </Text>
-          <Timer />
-          {/* <Text
-            style={{
-              fontSize: 18,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: '#FFB600',
-              marginTop: 5,
-            }}>
-            {time}
-          </Text> */}
-        </View>
-      </View>
-      <View
-        style={{
-          flexDirection: 'row-reverse',
-
-          alignItems: 'center',
-        }}>
-        <View
-          style={{
-            width: '35%',
-            height: 55,
-
-            marginEnd: 10,
-
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              fontFamily: 'LeagueSpartan-Bold',
-              color: 'white',
-              fontSize: 16,
-            }}>
-            Attempts Left : {attempts}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: 150,
-        }}>
-        <Text
-          style={{
-            fontFamily: 'LeagueSpartan-Bold',
-            color: 'white',
-            fontSize: 40,
-          }}>
-          {t('Guess The Tiles')}
-        </Text>
-      </View>
-      <FlatList
-        style={{alignSelf: 'center'}}
-        data={data}
-        numColumns={3}
-        renderItem={({item}) => {
-          return (
-            <View>
-              <FlipCard
-                friction={6}
-                perspective={1000}
-                flipHorizontal={true}
-                flip={flipped}
-                clickable={true}>
-                <View>
-                  <Touchableopacity
-                    onPress={() => {
-                      // PlaySound();
-                      // setModalVisible(true);
-                    }}
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      alignSelf: 'center',
-                    }}>
-                    <View
-                      style={{
-                        // flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: 110,
-                        width: 110,
-                        backgroundColor: 'white',
-                        //   borderRadius: 10,
-                        //   margin: 4,
-                        borderWidth: 5,
-                        borderColor: '#FFB600',
-                      }}>
-                      <Image
-                        source={item}
-                        style={{width: '100%', height: '100%'}}
-                      />
-                    </View>
-                  </Touchableopacity>
-                </View>
-                <View>
-                  <Touchableopacity
-                    onPress={() => {
-                      // setModalVisible(true);
-                    }}
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      alignSelf: 'center',
-                    }}>
-                    <View
-                      style={{
-                        // flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: 110,
-                        width: 110,
-                        backgroundColor: 'white',
-                        //   borderRadius: 10,
-                        //   margin: 4,
-                        borderWidth: 5,
-                        borderColor: '#FFB600',
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 20,
-                          fontFamily: 'LeagueSpartan-SemiBold',
-                          color: '#00b200',
-                        }}>
-                        {t('Guess')}
-                      </Text>
-                    </View>
-                  </Touchableopacity>
-                </View>
-              </FlipCard>
+            <Image
+              source={require('../../../assets/image/bravo.png')}
+              style={{width: 120, height: 120, marginTop: 40}}
+            />
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginEnd: 20,
+                width: 80,
+                height: 80,
+                paddingTop: 30,
+              }}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontFamily: 'LeagueSpartan-Bold',
+                  fontSize: 22,
+                }}>
+                {t('Level')}
+              </Text>
+              <Text
+                style={{
+                  color: '#FFB600',
+                  fontFamily: 'LeagueSpartan-Bold',
+                  fontSize: 28,
+                }}>
+                {lvl}
+              </Text>
             </View>
-          );
-        }}
-      />
-      <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-        <Touchableopacity
-          onPress={() => {
-            props.navigation.goBack();
-          }}
-          style={{
-            width: '90%',
-            height: 50,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'red',
-            marginBottom: 40,
-            borderRadius: 10,
-          }}>
-          <Text
+          </View>
+          <View
             style={{
-              fontSize: 28,
-              fontFamily: 'LeagueSpartan-Bold',
-              color: 'white',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: 'rgba(48, 16, 107, 0.5)',
+              marginTop: 5,
+              height: 60,
+              width: '100%',
             }}>
-            {t('End the level')}
-          </Text>
-        </Touchableopacity>
-      </View>
+            <View
+              style={{
+                // flexDirection: 'row',
+                marginStart: 15,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  color: 'white',
+                  // marginTop: 5,
+                }}>
+                {t('Points')}
+              </Text>
+              {/* <AntDesign name="star" size={24} color="#FFB600" /> */}
+              <Text
+                style={{
+                  fontSize: 26,
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  color: '#FFB600',
+                  // marginTop: 5,
+                }}>
+                {score}
+              </Text>
+            </View>
+            <View
+              style={{
+                marginEnd: 10,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 15,
+                backgroundColor: 'rgba(255, 255, 255, 0)',
+              }}>
+              <Entypo
+                style={{marginEnd: 10}}
+                name="clock"
+                size={20}
+                color="white"
+              />
+              <Timer />
+            </View>
+          </View>
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              width: '100%',
+              height: 130,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'LeagueSpartan-Bold',
+                color: 'white',
+                fontSize: 40,
+              }}>
+              {t('Guess The Tiles')}
+            </Text>
+          </View>
+          <FlatList
+            style={{alignSelf: 'center'}}
+            data={data}
+            numColumns={3}
+            renderItem={({item}) => {
+              return (
+                <View>
+                  <FlipCard
+                    friction={6}
+                    perspective={1000}
+                    flipHorizontal={true}
+                    flip={flipped}
+                    clickable={true}>
+                    <View>
+                      <Touchableopacity
+                        onPress={() => {}}
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          alignSelf: 'center',
+                        }}>
+                        <View
+                          style={{
+                            // flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: 90,
+                            width: 90,
+                            backgroundColor: 'white',
+                            borderRadius: 10,
+                            margin: 4,
+                            borderWidth: 5,
+                            borderColor: '#FFB600',
+                          }}>
+                          <Image
+                            source={item}
+                            style={{width: '100%', height: '100%'}}
+                          />
+                        </View>
+                      </Touchableopacity>
+                    </View>
+                    <View>
+                      <Touchableopacity
+                        onPress={() => {
+                          // setModalVisible(true);
+                        }}
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          alignSelf: 'center',
+                        }}>
+                        <View
+                          style={{
+                            // flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: 85,
+                            width: 85,
+                            backgroundColor: 'white',
+                            borderRadius: 10,
+                            margin: 4,
+                            borderWidth: 5,
+                            borderColor: '#FFB600',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              fontFamily: 'LeagueSpartan-SemiBold',
+                              color: '#d4d4ff',
+                            }}>
+                            ???
+                          </Text>
+                        </View>
+                      </Touchableopacity>
+                    </View>
+                  </FlipCard>
+                </View>
+              );
+            }}
+          />
+          <IconModal
+            onPressCross={() => {
+              setModalGiveUpVisible(true);
+              setModalVisible(false);
+              dispatch(setTimerPlaying(false));
+            }}
+            dataLength={length}
+            tilesImgs={data}
+            visible={modalVisible}
+            data={Carouseldata}
+            winModal={() => {
+              setModalWinVisible(true);
+              setModalVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+            }}
+            loseModal={() => {
+              setModalLoseVisible(true);
+              setModalVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+            }}
+            onPress={() => {
+              if (attempts > 0) {
+                setAttempts(prev => prev - 1);
+              }
+            }}
+          />
+          <WinModal
+            onPressWin={() => {
+              if (sublvlState === 8 && mainLevel === 6) {
+                setModalGameResetVisible(true);
+                setModalWinVisible(false);
+                // props.navigation.navigate('');
+              } else if (sublvlState === 8 && mainLevel < 6) {
+                setModalGreetingVisible(true);
+                setModalWinVisible(false);
+                // props.navigation.navigate('Main');
+                // setModalGreetingVisible(false);
+              }
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+              // dispatch(setTimerPlaying(true));
+            }}
+            onPress={() => {
+              if (sublvlState === 8 && mainLevel === 6) {
+                // props.navigation.navigate('Main');
+              } else {
+                props.navigation.goBack();
+              }
 
-      <IconModal
-        dataLength={length}
+              setModalWinVisible(false);
+              // dispatch(setTimerPlaying(true));
+            }}
+            visible={modalWinVisible}
+          />
+          <LoseModal
+            imgs={data}
+            onPressCancel={() => {
+              props.navigation.navigate('Main');
+              // setModalVisible(false);
+              setModalLoseVisible(false);
+            }}
+            onPressRetry={() => {
+              props.navigation.goBack();
+              // setCardShowingVisible(true);
+              setModalLoseVisible(false);
+            }}
+            visible={modalLoseVisible}
+          />
+          <GiveUpModal
+            visible={modalGiveUpVisible}
+            onPressSi={() => {
+              setModalLoseVisible(true);
+              setModalGiveUpVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+              // dispatch(setTimerPlaying(true));
+            }}
+            onPressNo={() => {
+              setModalGiveUpVisible(false);
+              setModalVisible(true);
+              dispatch(setTimerPlaying(true));
+            }}
+          />
+          <GreetingModal
+            onPress={() => {
+              props.navigation.navigate('Main');
+              setModalGreetingVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+            }}
+            visible={modalGreetingVisible}
+          />
+          <GameReset
+            onPressYes={() => {
+              props.navigation.navigate('Main');
+              setModalGameResetVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+            }}
+            onPressNo={() => {
+              props.navigation.navigate('Main');
+              setModalGameResetVisible(false);
+              dispatch(setTimer(50));
+              dispatch(setTimerPlaying(false));
+            }}
+            visible={modalGameResetVisible}
+          />
+          {/* visible={modalGreetingVisible} */}
+          {/* <CardShowing
+        onPressC={() => {
+          setCardShowingVisible(false);
+        }}
         tilesImgs={data}
-        visible={modalVisible}
-        data={Carouseldata}
-        winModal={() => {
-          setModalWinVisible(true);
-          setModalVisible(false);
-        }}
-        loseModal={() => {
-          setModalLoseVisible(true);
-          setModalVisible(false);
-        }}
-        onPress={() => {
-          if (attempts > 0) {
-            setAttempts(prev => prev - 1);
-          }
-        }}
-        // onPressDown={() => {
-        //   setModalLoseVisible(true);
-        //   setModalVisible(false);
-        // }}
-      />
-      <WinModal
-        onPressWin={() => {
-          props.navigation.navigate('Main');
-          setModalWinVisible(false);
-        }}
-        onPress={() => {
-          props.navigation.goBack();
-          setModalWinVisible(false);
-        }}
-        visible={modalWinVisible}
-      />
-      <LoseModal
-        onPress={() => {
-          if (timer === 0) {
-            props.navigation.navigation('Main');
-            setModalLoseVisible(false);
-          } else {
-            props.navigation.goBack();
-            setModalLoseVisible(false);
-          }
-        }}
-        visible={modalLoseVisible}
-      />
+        visible={cardShowingVisible}
+      /> */}
+        </ScrollView>
+      </GestureHandlerRootView>
     </AppBackground>
   );
 };

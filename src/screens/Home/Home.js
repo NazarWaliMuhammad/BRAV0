@@ -3,12 +3,16 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNExitApp from 'react-native-exit-app';
+
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontiso from 'react-native-vector-icons/Fontisto';
@@ -17,17 +21,41 @@ import AppBackground from '../../components/appBackground ';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from '../../components/Touchableopacity';
 import firestore from '@react-native-firebase/firestore';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import auth from '@react-native-firebase/auth';
+import SettingModal from '../../components/settingModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useIsFocused} from '@react-navigation/native';
 import {
+  setGameCompletion,
   setMainlevel,
+  setMainLvlCompleted,
   setScore,
-  setSublevel,
+  setSublevel1,
+  setSublevel2,
+  setSublevel3,
+  setSublevel4,
+  setSublevel5,
+  setSublevel6,
   setUserName,
 } from '../../../redux/Action/Action';
+import FirstTimeModal from '../FirstTimeLogin/FirstTimeModal';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+// import _default from 'react-native-svg/lib/typescript/fabric/CircleNativeComponent';
 const HomeScreen = props => {
   const {t, i18n} = useTranslation();
+  const [settingModal, setSettingModal] = useState(false);
+  const [firstTimeModal, setFirstTimeModal] = useState(true);
+
+  const SOUND = useSelector(state => state.sound);
   const dispatch = useDispatch();
+  // const authentication = auth;
+  const isFocused = useIsFocused();
+  const userCheck = firestore()
+    .collection('gameRecord')
+    .doc(auth().currentUser.uid)
+    .get();
+
   useEffect(() => {
     const getData = async () => {
       const user = await firestore()
@@ -38,16 +66,43 @@ const HomeScreen = props => {
       //   return item;
       // });
       dispatch(setMainlevel(user._data.mainLevel));
-      dispatch(setSublevel(user._data.subLevel));
+      dispatch(setSublevel1(user._data.subLevel1));
+      dispatch(setSublevel2(user._data.subLevel2));
+      dispatch(setSublevel3(user._data.subLevel3));
+      dispatch(setSublevel4(user._data.subLevel4));
+      dispatch(setSublevel5(user._data.subLevel5));
+      dispatch(setSublevel6(user._data.subLevel6));
+
       dispatch(setUserName(user._data.userName));
       dispatch(setScore(user._data.score));
-      console.log(user._data.mainLevel);
-      console.log(user._data.subLevel);
+      dispatch(setGameCompletion(user._data.completed));
+      // dispatch(setSubLvlCompleted(user._data.subLevelCompleted));
+      dispatch(setMainLvlCompleted(user._data.mainLevelCompleted));
+      // console.log(SOUND);
+      console.group(SOUND);
+
+      // console.log();
+      console.log(user._data.subLevel1);
+      console.log(user._data.subLevel2);
+      console.log(user._data.subLevel3);
+      console.log(user._data.subLevel4);
+      console.log(user._data.subLevel5);
+      console.log(user._data.subLevel6);
+
       console.log(user._data.userName);
       console.log(user._data.score);
+      // console.log(user._data.subLevelCompleted + ' Hello');
+      console.log(user._data.mainLevelCompleted + 'Completed');
     };
     getData();
-  }, []);
+    // console.log('Hello');
+    // if()
+  }, [isFocused, userCheck]);
+  const logOut = () => {
+    auth()
+      .signOut()
+      .then(() => console.log('User signed out!'));
+  };
   const data = [
     {
       level: '1st',
@@ -82,232 +137,303 @@ const HomeScreen = props => {
   ];
   return (
     <AppBackground>
-      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-        <View
-          style={{
-            width: 280,
-            height: 100,
-
-            justifyContent: 'center',
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
             alignItems: 'center',
-          }}>
-          <Image
-            source={require('../../../assets/image/bravo.png')}
-            style={{width: 300, height: 300}}
-          />
-        </View>
-        <Text
-          style={{
-            fontFamily: 'LeagueSpartan-Medium',
-            fontSize: 26,
-            color: 'white',
-            textAlign: 'center',
-          }}>
-          Refine your memories....
-        </Text>
-      </View>
-      <View
-        style={{
-          flex: 1,
-          // justifyContent: 'center',
-          // alignItems: 'center',
-          // backgroundColor: '#03D1FF',
-          flexDirection: 'column-reverse',
-        }}>
-        <View
-          style={{
-            height: 240,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
-          <View style={{marginVertical: -10}}>
-            <Touchableopacity
-              onPress={() => {}}
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+          // style={styles.sview}
+        >
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              flex: 5,
+              width: '100%',
+            }}>
+            <View
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 30,
-                marginStart: 4,
-                marginTop: 6,
-                backgroundColor: '#718BD9',
+                width: 280,
+                height: 100,
+
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <AntDesign name="star" size={30} color="#FFB600" />
-            </Touchableopacity>
-            <Touchableopacity
-              onPress={() => {}}
+              <Image
+                source={require('../../../assets/image/bravo.png')}
+                style={{width: 300, height: 300}}
+              />
+            </View>
+            <Text
               style={{
-                width: 50,
-                height: 50,
-                borderRadius: 30,
-                marginStart: 4,
-                marginTop: 6,
-                backgroundColor: '#718BD9',
+                fontFamily: 'LeagueSpartan-Medium',
+                fontSize: 26,
+                color: 'white',
+                textAlign: 'center',
+              }}>
+              Refine your memories....
+            </Text>
+            <View
+              style={{
+                // flex: 1,
+                width: '100%',
+                marginTop: 50,
                 justifyContent: 'center',
                 alignItems: 'center',
               }}>
-              <Ionicons name="game-controller" size={30} color="white" />
-            </Touchableopacity>
-            <Touchableopacity
-              onPress={() => {}}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 30,
-                marginStart: 4,
-                marginTop: 6,
-                backgroundColor: '#718BD9',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Fontiso name="info" size={30} color="white" />
-            </Touchableopacity>
-            <Touchableopacity
-              onPress={() => {}}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 30,
-                marginStart: 4,
-                marginTop: 6,
-                backgroundColor: '#718BD9',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Fontiso name="facebook" size={30} color="white" />
-            </Touchableopacity>
-          </View>
-          <View style={{alignItems: 'center'}}>
-            <Touchableopacity
-              onPress={() => {
-                props.navigation.navigate('Main');
-              }}
-              style={{
-                marginTop: 20,
-                width: 160,
-                height: 60,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#FFB600',
-                borderRadius: 20,
-                elevation: 4,
-                shadowOffset: {width: 0, height: 0},
-                shadowColor: 'black',
-                shadowRadius: 20,
-                shadowOpacity: 0.1,
-                // marginEnd: 19,
-              }}>
-              <Text
+              <Touchableopacity
+                onPress={() => {
+                  props.navigation.navigate('Main');
+                }}
                 style={{
-                  fontFamily: 'LeagueSpartan-SemiBold',
-                  color: 'white',
-                  fontSize: 25,
+                  // marginTop: 20,
+                  // paddingBottom: 2x0,
+
+                  width: '75%',
+                  height: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255,255, 0.1)',
+                  borderRadius: 10,
+                  elevation: 4,
+                  shadowOffset: {width: 0, height: 0},
+                  shadowColor: 'black',
+                  shadowRadius: 10,
+                  shadowOpacity: 0.1,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  // marginEnd: 19,
                 }}>
-                {t('Play')}
-              </Text>
-            </Touchableopacity>
-            <Touchableopacity
-              onPress={() => {
+                <Text
+                  style={{
+                    fontFamily: 'LeagueSpartan-SemiBold',
+                    // color: '#FFB600',
+                    color: 'white',
+
+                    fontSize: 25,
+                  }}>
+                  {t('Play')}
+                </Text>
+              </Touchableopacity>
+              <Touchableopacity
+                onPress={() => {
+                  props.navigation.navigate('Scoreboard');
+                }}
+                style={{
+                  // marginTop: 15,
+                  marginVertical: 18,
+                  width: '75%',
+                  height: 50,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255,255, 0.1)',
+                  borderRadius: 10,
+                  elevation: 4,
+                  shadowOffset: {width: 0, height: 0},
+                  shadowColor: 'black',
+                  shadowRadius: 10,
+                  shadowOpacity: 0.1,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                }}>
+                <FontAwesome5 name="crown" size={24} color="white" />
+
+                <Text
+                  style={{
+                    fontFamily: 'LeagueSpartan-SemiBold',
+                    // color: '#FFB600',
+                    color: 'white',
+
+                    fontSize: 24,
+                    marginStart: 5,
+                  }}>
+                  {t('Scoreboard')}
+                </Text>
+              </Touchableopacity>
+              <Touchableopacity
+                onPress={() => {
+                  // dispatch(setTimer(0));
+                  props.navigation.navigate('Credits'); // dispatch(setScore(0));
+                }}
+                style={{
+                  // marginTop: 15,
+                  marginBottom: 18,
+
+                  width: '75%',
+                  height: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255,255, 0.1)',
+                  borderRadius: 10,
+                  elevation: 4,
+                  shadowOffset: {width: 0, height: 0},
+                  shadowColor: 'black',
+                  shadowRadius: 10,
+                  shadowOpacity: 0.1,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  // width: 120,
+                  // height: 60,
+                  // justifyContent: 'center',
+                  // alignItems: 'center',
+                  // backgroundColor: 'purple',
+                  // borderRadius: 20,
+                  // elevation: 4,
+                  // shadowOffset: {width: 0, height: 0},
+                  // shadowColor: 'black',
+                  // shadowRadius: 20,
+                  // shadowOpacity: 0.1,
+                  // marginEnd: 19,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'LeagueSpartan-SemiBold',
+                    // color: 'skyblue',
+                    color: 'white',
+
+                    fontSize: 25,
+                  }}>
+                  {t('Credits')}
+                </Text>
+              </Touchableopacity>
+              <Touchableopacity
+                onPress={() => {
+                  // dispatch(setTimer(0));
+                  // props.navigation.navigate('Settings');
+                  setSettingModal(true); // dispatch(setScore(0));
+                }}
+                style={{
+                  // marginTop: 15,
+                  marginBottom: 18,
+
+                  width: '75%',
+                  height: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255,255, 0.1)',
+                  borderRadius: 10,
+                  elevation: 4,
+                  shadowOffset: {width: 0, height: 0},
+                  shadowColor: 'black',
+                  shadowRadius: 10,
+                  shadowOpacity: 0.1,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  // width: 120,
+                  // height: 60,
+                  // justifyContent: 'center',
+                  // alignItems: 'center',
+                  // backgroundColor: 'purple',
+                  // borderRadius: 20,
+                  // elevation: 4,
+                  // shadowOffset: {width: 0, height: 0},
+                  // shadowColor: 'black',
+                  // shadowRadius: 20,
+                  // shadowOpacity: 0.1,
+                  // marginEnd: 19,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'LeagueSpartan-SemiBold',
+                    color: 'white',
+                    fontSize: 25,
+                  }}>
+                  {/* {t('Quit')}
+                   */}
+                  {t('Settings')}
+                </Text>
+              </Touchableopacity>
+              <Touchableopacity
+                onPress={() => {
+                  RNExitApp.exitApp();
+                }}
+                style={{
+                  // marginTop: 15,
+                  // marginVertical: 26,
+                  width: '75%',
+                  height: 50,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255, 255,255, 0.1)',
+                  borderRadius: 10,
+                  elevation: 4,
+                  shadowOffset: {width: 0, height: 0},
+                  shadowColor: 'black',
+                  shadowRadius: 10,
+                  shadowOpacity: 0.1,
+                  borderWidth: 1,
+                  borderColor: 'white',
+                  // width: 100,
+                  // height: 60,
+                  // justifyContent: 'center',
+                  // alignItems: 'center',
+                  // backgroundColor: 'red',
+                  // borderRadius: 20,
+                  // elevation: 4,
+                  // shadowOffset: {width: 0, height: 0},
+                  // shadowColor: 'black',
+                  // shadowRadius: 20,
+                  // shadowOpacity: 0.1,
+                  // marginEnd: 19,
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'LeagueSpartan-SemiBold',
+                    // color: 'red',
+                    color: 'white',
+
+                    fontSize: 25,
+                  }}>
+                  {/* {t('Quit')} */}
+                  {/* Close */}
+                  {t('Close')}
+                </Text>
+              </Touchableopacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+
+              // flexDirection: 'column-reverse',
+              flexDirection: 'column',
+              alignSelf: 'center',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <SettingModal
+              onPressLogOut={() => {
                 props.navigation.navigate('Login');
+                setSettingModal(false);
               }}
-              style={{
-                marginTop: 20,
-                width: 120,
-                height: 60,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: 'purple',
-                borderRadius: 20,
-                elevation: 4,
-                shadowOffset: {width: 0, height: 0},
-                shadowColor: 'black',
-                shadowRadius: 20,
-                shadowOpacity: 0.1,
-                // marginEnd: 19,
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'LeagueSpartan-SemiBold',
-                  color: 'white',
-                  fontSize: 25,
-                }}>
-                {t('Quit')}
-              </Text>
-            </Touchableopacity>
+              onPressK={() => {
+                setSettingModal(false);
+                // PlaySound();
+              }}
+              visible={settingModal}
+              onPressC={() => {
+                setSettingModal(false);
+                // PlaySound();
+              }}
+            />
+            <FirstTimeModal />
           </View>
-          <View style={{flexDirection: 'column-reverse', marginVertical: 26}}>
-            <Touchableopacity
-              onPress={() => {}}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 30,
-                marginEnd: 4,
-                backgroundColor: '#718BD9',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Ionicons name="settings" size={28} color="white" />
-            </Touchableopacity>
-          </View>
-        </View>
-        {/* <View style={{flex: 1, justifyContent: 'flex-end', alignItems: 'center'}}>
-        <TouchableOpacity
-          onPress={() => {}}
-          style={{
-            marginBottom: 20,
-
-            width: '45%',
-            height: 60,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'purple',
-            borderRadius: 20,
-            elevation: 4,
-            shadowOffset: {width: 0, height: 0},
-            shadowColor: 'black',
-            shadowRadius: 20,
-            shadowOpacity: 0.1,
-          }}>
-          <Text
-            style={{
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: 'white',
-              fontSize: 25,
-            }}>
-            Play
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {}}
-          style={{
-            marginBottom: 30,
-            width: '30 %',
-            height: 60,
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: '#FFB600',
-            borderRadius: 20,
-            elevation: 4,
-            shadowOffset: {width: 0, height: 0},
-            shadowColor: 'black',
-            shadowRadius: 20,
-            shadowOpacity: 0.1,
-          }}>
-          <Text
-            style={{
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: 'white',
-              fontSize: 25,
-            }}>
-            Quit
-          </Text>
-        </TouchableOpacity>
-      </View> */}
-      </View>
+        </ScrollView>
+      </GestureHandlerRootView>
     </AppBackground>
   );
 };
+const styles = StyleSheet.create({
+  sview: {
+    // flex: 1,
+    // width: '100%',
+    // justifyContent: 'center',
+    // alignItems: 'center',
+  },
+});
 
 export default HomeScreen;

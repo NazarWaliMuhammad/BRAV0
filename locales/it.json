@@ -1,3 +1,4 @@
+
 {
   "Username": "Nome utente",
   "Password": "Password",
@@ -8,13 +9,13 @@
   "Register yourself" : "Registrati",
   "Play"  :"Gioca",
   "Quit" : "Esci",
-  "ScoreBoard" : "Tabellone dei punteggi",
-  "Main Levels" : "Livelli principali",
-  "Level" : "Livello",
+  "ScoreBoard" : "Classifica",
+  "Main Levels" : "Serie principali",
+  "Level" : "Serie",
   "Information" : "Informazioni",
   "Cancel"  :"Annulla",
   "Start" : "Inizia",
-  "Complete All SubLevels In 5 Minutes" : "Completa tutti i sotto-livelli in 5 minuti",
+  "Complete All SubLevels In 5 Minutes" : "Completa tutti i livelli in 5 minuti",
   "Settings"  :"Impostazioni",
   "Music" : "Musica",
   "Language" : "Lingua",
@@ -22,8 +23,22 @@
    "Guess" : "Indovina",
    "Time Remaining" : "Tempo rimanente",
    "End the level" : "Termina il livello",
-   "Points Earned" : "Punti guadagnati",
+   "Points Earned" : "Punti ottenuti",
    "Retry" : "Riprova",
-    "Continue" : "Continua"
-
-}
+    "Continue" : "Continua",
+    "Do you give up" :"Vuoi arrenderti?",
+    "Yes" : "Sì"
+    ,"Congratulations" : "Bravo!!"
+   ,"you completed level" : "hai completato il livello",
+  "Game Completed" :"Gioco completato",
+"Congratulations!! you won the game continue to reset" : "Congratulazioni!! Hai vinto il gioco, continua per ricominciare.",
+"Points" : "Punti"
+,"Tutorial" :"Bravo!! È un gioco di memoria.Sono presenti sei Serie di immagini dalle più facili alle più difficili. Per ogni Serie si devono superare 8 livelli. Per superare ogni livello occorre memorizzare le icone che il sistema presenta ogni volta in numero sempre maggiore. Chi ricorda tutte le icone fino alla sesta Serie vince il titolo di TOP 1 e può ricominciare tentando il TOP 2 e così via. Il gioco non ha limiti di tempo. Si suggerisce di giocare anche in coppia contro un’altra coppia (o gruppo) e sarà molto divertente!",
+     "Credits" :"Riconoscimenti",
+     "Created by Marco Dané" :"Ideato da Marco Dané",
+     "Development and Design: creativeaid.it" :"Sviluppo e Design: creativeaid.it",
+     "Supervision: Emiliano Dané" :"Supervision: Emiliano Dané",
+     "Produced by: Marco Dané and Federica Dané" : "Prodotto da: Marco Dané e Federica Dané"
+ ,    "Logout" : "Logout",
+   "Close": "Chiudi",
+   "Scoreboard" : "Classifica"}

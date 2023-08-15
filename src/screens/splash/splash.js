@@ -12,26 +12,34 @@ import {
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
 import AppBackground from '../../components/appBackground ';
-import WinModal from '../../components/WinModal';
-import LoseModal from '../../components/loseModal';
+
 import auth from '@react-native-firebase/auth';
+import {useDispatch, useSelector} from 'react-redux';
+import {setSound, setMusic} from '../../../redux/Action/Action';
 const SplashScreen = props => {
   const {i18n} = useTranslation();
+  const dispatch = useDispatch();
   // const [selectedLanguage, setSelectedLanguage] = useState(i18n.language);
+
+  const MUSIC = useSelector(state => state.music);
 
   useEffect(() => {
     const getLang = async () => {
-      AsyncStorage.setItem('SETTING_SOUND', 'true');
-      const lang = await AsyncStorage.getItem('Selected_Language');
+      const soundState = await AsyncStorage.getItem('SETTING_SOUND');
+      const musicState = await AsyncStorage.getItem('SETTING_MUSIC');
+      // console.log(JSON.stringify(soundState));
+      dispatch(setSound(soundState));
+      dispatch(setMusic(musicState));
+      const lang = await AsyncStorage.getItem('LANGUAGE');
       i18n.changeLanguage(lang);
     };
     getLang();
     setTimeout(() => {
       auth().onAuthStateChanged(user => {
         if (user) {
-          props.navigation.navigate('Home');
+          props.navigation.replace('Home');
         } else {
-          props.navigation.navigate('Login');
+          props.navigation.replace('Login');
         }
       });
     }, 2000);

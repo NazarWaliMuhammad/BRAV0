@@ -9,6 +9,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactNativeHost;
 import com.facebook.soloader.SoLoader;
 import java.util.List;
+  // import com.github.wumke.RNExitApp.RNExitAppPackage;
+  
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -59,4 +61,12 @@ public class MainApplication extends Application implements ReactApplication {
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
+  // @Override
+  // protected List<ReactPackage> getPackages() {
+  //   return Arrays.<ReactPackage>asList(
+    
+  //     new RNExitAppPackage(),
+      
+  //   );
+  // }
 }

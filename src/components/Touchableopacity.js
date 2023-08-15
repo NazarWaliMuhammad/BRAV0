@@ -27,10 +27,9 @@ const Touchableopacity = props => {
       disabled={props.disabled}
       style={props.style}
       onPress={() => {
-        if (stateSound === true) {
+        if (stateSound === 'true') {
           PlaySound();
         }
-
         props.onPress();
       }}>
       {props.children}

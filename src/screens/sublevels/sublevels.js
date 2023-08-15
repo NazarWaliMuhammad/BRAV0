@@ -1,44 +1,102 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   FlatList,
   Image,
-  ImageBackground,
+  StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
+  Animated,
+  ScrollView,
 } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import PlaySound from '../../../assets/sound/pressSound';
+import Entypo from 'react-native-vector-icons/Entypo';
+
 import SettingModal from '../../components/settingModal';
 import GameStartModal from '../../components/gameStartModal';
 import AppBackground from '../../components/appBackground ';
-import {useTranslation} from 'react-i18next';
-import Timer from '../../components/Timer';
-import Touchableopacity from '../../components/Touchableopacity';
-import LoseModal from '../../components/loseModal';
-import {setTimer, setTimerState} from '../../../redux/Action/Action';
 
+import Touchableopacity from '../../components/Touchableopacity';
+// import LoseModal from '../../components/loseModal';
+import {
+  setIndex,
+  setMainIndex,
+  setMainLvlName,
+  setTimerState,
+} from '../../../redux/Action/Action';
+import LinearGradient from 'react-native-linear-gradient';
+import {Svg, Circle} from 'react-native-svg';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // import {ANIMALS_IMGS} from '../../utils/services/GameServices/LevelUtils';
 const SubScreen = props => {
   const dispatch = useDispatch();
   const [isTimer, setIsTimer] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
   const [category, setCategory] = useState(null);
+
   const [modalLoseVisible, setModalLoseVisible] = useState(false);
   const [infoModalVisible, setInfoModalVisible] = useState(false);
   const [subLvl, setSubLvl] = useState(null);
   const [score, setScore] = useState(null);
-  const sub_levels = useSelector(state => state.subLevel);
+  const sub_levels1 = useSelector(state => state.subLevel1);
+  const sub_levels2 = useSelector(state => state.subLevel2);
+  const sub_levels3 = useSelector(state => state.subLevel3);
+  const sub_levels4 = useSelector(state => state.subLevel4);
+  const sub_levels5 = useSelector(state => state.subLevel5);
+  const sub_levels6 = useSelector(state => state.subLevel6);
+
   const timer = useSelector(state => state.time);
   const scoreState = useSelector(state => state.score);
   const timerState = useSelector(state => state.timerState);
+  const LEVEL_NAME = useSelector(state => state.name);
+  const main_level = useSelector(state => state.mainLevel);
+  const subLevelCompleted = useSelector(state => state.subLvlCmplt);
+  // console.log(sub_levels + 'levels');
+  // const [value, setValue] = useState(0);
+  // const fadeAnim = useState(new Animated.Value(0))[0];
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  // const fadeAnim = useRef(new Animated.Value(0)).current;
+  let blinkingAnimation = useRef(null);
+
   useEffect(() => {
-    if (props.route.params.name === 'Animals') {
+    const blinkAnimation = () => {
+      blinkingAnimation.current = Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 500, // Adjust the duration as needed
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 500, // Adjust the duration as needed
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    };
+
+    if (subLvl === 4) {
+      blinkAnimation();
+      setTimeout(() => {
+        blinkingAnimation.current && blinkingAnimation.current.stop();
+        fadeAnim.setValue(1);
+      }, 5000); // Stop the blinking after 5 seconds
+    } else {
+      blinkingAnimation.current && blinkingAnimation.current.stop(); // Stop the blinking if level is not 3
+      fadeAnim.setValue(1); // Set the opacity value to 1 (fully opaque)
+    }
+
+    return () => {
+      blinkingAnimation.current && blinkingAnimation.current.stop(); // Stop the blinking animation when the component is unmounted
+    };
+  }, [fadeAnim, subLvl]);
+
+  useEffect(() => {
+    if (LEVEL_NAME === 'Animals') {
+      setSubLvl(sub_levels1);
       setCategory([
         require('../../../assets/image/animal_01.png'),
         require('../../../assets/image/animal_02.png'),
@@ -62,385 +120,359 @@ const SubScreen = props => {
         require('../../../assets/image/animal_20.png'),
       ]);
     }
-    if (props.route.params.name === 'People') {
+    if (LEVEL_NAME === 'People') {
+      console.log(LEVEL_NAME);
+      setSubLvl(sub_levels2);
+
       setCategory([
-        require('../../../assets/image/animal_01.png'),
-        require('../../../assets/image/animal_02.png'),
-        require('../../../assets/image/animal_03.png'),
-        require('../../../assets/image/animal_04.png'),
-        require('../../../assets/image/animal_05.png'),
-        require('../../../assets/image/animal_06.png'),
-        require('../../../assets/image/animal_07.png'),
-        require('../../../assets/image/animal_08.png'),
-        require('../../../assets/image/animal_09.png'),
-        require('../../../assets/image/animal_10.png'),
-        require('../../../assets/image/animal_11.png'),
-        require('../../../assets/image/animal_12.png'),
-        require('../../../assets/image/animal_13.png'),
-        require('../../../assets/image/animal_14.png'),
-        require('../../../assets/image/animal_15.png'),
-        require('../../../assets/image/animal_16.png'),
-        require('../../../assets/image/animal_17.png'),
-        require('../../../assets/image/animal_18.png'),
-        require('../../../assets/image/animal_19.png'),
-        require('../../../assets/image/animal_20.png'),
+        require('../../../assets/image/people_01.png'),
+        require('../../../assets/image/people_02.png'),
+        require('../../../assets/image/people_03.png'),
+        require('../../../assets/image/people_04.png'),
+        require('../../../assets/image/people_05.png'),
+        require('../../../assets/image/people_06.png'),
+        require('../../../assets/image/people_07.png'),
+        require('../../../assets/image/people_08.png'),
+        require('../../../assets/image/people_09.png'),
+        require('../../../assets/image/people_10.png'),
+        require('../../../assets/image/people_11.png'),
+        require('../../../assets/image/people_12.png'),
+        require('../../../assets/image/people_13.png'),
+        require('../../../assets/image/people_14.png'),
+        require('../../../assets/image/people_15.png'),
+        require('../../../assets/image/people_16.png'),
+        require('../../../assets/image/people_17.png'),
+        require('../../../assets/image/people_18.png'),
+        require('../../../assets/image/people_19.png'),
+        require('../../../assets/image/people_20.png'),
       ]);
     }
-    if (props.route.params.name === 'Sports') {
+    if (LEVEL_NAME === 'Sports') {
+      setSubLvl(sub_levels3);
       setCategory([
-        require('../../../assets/image/animal_01.png'),
-        require('../../../assets/image/animal_02.png'),
-        require('../../../assets/image/animal_03.png'),
-        require('../../../assets/image/animal_04.png'),
-        require('../../../assets/image/animal_05.png'),
-        require('../../../assets/image/animal_06.png'),
-        require('../../../assets/image/animal_07.png'),
-        require('../../../assets/image/animal_08.png'),
-        require('../../../assets/image/animal_09.png'),
-        require('../../../assets/image/animal_10.png'),
-        require('../../../assets/image/animal_11.png'),
-        require('../../../assets/image/animal_12.png'),
-        require('../../../assets/image/animal_13.png'),
-        require('../../../assets/image/animal_14.png'),
-        require('../../../assets/image/animal_15.png'),
-        require('../../../assets/image/animal_16.png'),
-        require('../../../assets/image/animal_17.png'),
-        require('../../../assets/image/animal_18.png'),
-        require('../../../assets/image/animal_19.png'),
-        require('../../../assets/image/animal_20.png'),
+        require('../../../assets/image/sports_01.png'),
+        require('../../../assets/image/sports_02.png'),
+        require('../../../assets/image/sports_03.png'),
+        require('../../../assets/image/sports_04.png'),
+        require('../../../assets/image/sports_05.png'),
+        require('../../../assets/image/sports_06.png'),
+        require('../../../assets/image/sports_07.png'),
+        require('../../../assets/image/sports_08.png'),
+        require('../../../assets/image/sports_09.png'),
+        require('../../../assets/image/sports_10.png'),
+        require('../../../assets/image/sports_11.png'),
+        require('../../../assets/image/sports_12.png'),
+        require('../../../assets/image/sports_13.png'),
+        require('../../../assets/image/sports_14.png'),
+        require('../../../assets/image/sports_15.png'),
+        require('../../../assets/image/sports_16.png'),
+        require('../../../assets/image/sports_17.png'),
+        require('../../../assets/image/sports_18.png'),
+        require('../../../assets/image/sports_19.png'),
+        require('../../../assets/image/sports_20.png'),
       ]);
     }
-    if (props.route.params.name === 'Fantasy Forms 1') {
+    if (LEVEL_NAME === 'Fantasy 1') {
+      setSubLvl(sub_levels4);
+
+      // console.log(LEVEL_NAME);
       setCategory([
-        require('../../../assets/image/animal_01.png'),
-        require('../../../assets/image/animal_02.png'),
-        require('../../../assets/image/animal_03.png'),
-        require('../../../assets/image/animal_04.png'),
-        require('../../../assets/image/animal_05.png'),
-        require('../../../assets/image/animal_06.png'),
-        require('../../../assets/image/animal_07.png'),
-        require('../../../assets/image/animal_08.png'),
-        require('../../../assets/image/animal_09.png'),
-        require('../../../assets/image/animal_10.png'),
-        require('../../../assets/image/animal_11.png'),
-        require('../../../assets/image/animal_12.png'),
-        require('../../../assets/image/animal_13.png'),
-        require('../../../assets/image/animal_14.png'),
-        require('../../../assets/image/animal_15.png'),
-        require('../../../assets/image/animal_16.png'),
-        require('../../../assets/image/animal_17.png'),
-        require('../../../assets/image/animal_18.png'),
-        require('../../../assets/image/animal_19.png'),
-        require('../../../assets/image/animal_20.png'),
+        require('../../../assets/image/ff1_01.png'),
+        require('../../../assets/image/ff1_02.png'),
+        require('../../../assets/image/ff1_03.png'),
+        require('../../../assets/image/ff1_04.png'),
+        require('../../../assets/image/ff1_05.png'),
+        require('../../../assets/image/ff1_06.png'),
+        require('../../../assets/image/ff1_07.png'),
+        require('../../../assets/image/ff1_08.png'),
+        require('../../../assets/image/ff1_09.png'),
+        require('../../../assets/image/ff1_10.png'),
+        require('../../../assets/image/ff1_11.png'),
+        require('../../../assets/image/ff1_12.png'),
+        require('../../../assets/image/ff1_13.png'),
+        require('../../../assets/image/ff1_14.png'),
+        require('../../../assets/image/ff1_15.png'),
+        require('../../../assets/image/ff1_16.png'),
+        require('../../../assets/image/ff1_17.png'),
+        require('../../../assets/image/ff1_18.png'),
+        require('../../../assets/image/ff1_19.png'),
+        require('../../../assets/image/ff1_20.png'),
       ]);
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/09/27/16/10/fractal-960918_1280.jpg',
-      //   },
-      // ]);
     }
-    if (props.route.params.name === 'Fantasy Forms 2') {
+    if (LEVEL_NAME === 'Fantasy 2') {
+      setSubLvl(sub_levels5);
+
       setCategory([
-        require('../../../assets/image/animal_01.png'),
-        require('../../../assets/image/animal_02.png'),
-        require('../../../assets/image/animal_03.png'),
-        require('../../../assets/image/animal_04.png'),
-        require('../../../assets/image/animal_05.png'),
-        require('../../../assets/image/animal_06.png'),
-        require('../../../assets/image/animal_07.png'),
-        require('../../../assets/image/animal_08.png'),
-        require('../../../assets/image/animal_09.png'),
-        require('../../../assets/image/animal_10.png'),
-        require('../../../assets/image/animal_11.png'),
-        require('../../../assets/image/animal_12.png'),
-        require('../../../assets/image/animal_13.png'),
-        require('../../../assets/image/animal_14.png'),
-        require('../../../assets/image/animal_15.png'),
-        require('../../../assets/image/animal_16.png'),
-        require('../../../assets/image/animal_17.png'),
-        require('../../../assets/image/animal_18.png'),
-        require('../../../assets/image/animal_19.png'),
-        require('../../../assets/image/animal_20.png'),
+        require('../../../assets/image/ff2_01.png'),
+        require('../../../assets/image/ff2_02.png'),
+        require('../../../assets/image/ff2_03.png'),
+        require('../../../assets/image/ff2_04.png'),
+        require('../../../assets/image/ff2_05.png'),
+        require('../../../assets/image/ff2_06.png'),
+        require('../../../assets/image/ff2_07.png'),
+        require('../../../assets/image/ff2_08.png'),
+        require('../../../assets/image/ff2_09.png'),
+        require('../../../assets/image/ff2_10.png'),
+        require('../../../assets/image/ff2_11.png'),
+        require('../../../assets/image/ff2_12.png'),
+        require('../../../assets/image/ff2_13.png'),
+        require('../../../assets/image/ff2_14.png'),
+        require('../../../assets/image/ff2_15.png'),
+        require('../../../assets/image/ff2_16.png'),
+        require('../../../assets/image/ff2_17.png'),
+        require('../../../assets/image/ff2_18.png'),
+        require('../../../assets/image/ff2_19.png'),
+        require('../../../assets/image/ff2_20.png'),
       ]);
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2014/11/20/15/33/balls-539359_1280.jpg',
-      //   },
-      // ]);
     }
-    if (props.route.params.name === 'Fantasy Forms 3') {
+    if (LEVEL_NAME === 'Fantasy 3') {
+      setSubLvl(sub_levels6);
+
       setCategory([
-        require('../../../assets/image/animal_01.png'),
-        require('../../../assets/image/animal_02.png'),
-        require('../../../assets/image/animal_03.png'),
-        require('../../../assets/image/animal_04.png'),
-        require('../../../assets/image/animal_05.png'),
-        require('../../../assets/image/animal_06.png'),
-        require('../../../assets/image/animal_07.png'),
-        require('../../../assets/image/animal_08.png'),
-        require('../../../assets/image/animal_09.png'),
-        require('../../../assets/image/animal_10.png'),
-        require('../../../assets/image/animal_11.png'),
-        require('../../../assets/image/animal_12.png'),
-        require('../../../assets/image/animal_13.png'),
-        require('../../../assets/image/animal_14.png'),
-        require('../../../assets/image/animal_15.png'),
-        require('../../../assets/image/animal_16.png'),
-        require('../../../assets/image/animal_17.png'),
-        require('../../../assets/image/animal_18.png'),
-        require('../../../assets/image/animal_19.png'),
-        require('../../../assets/image/animal_20.png'),
+        require('../../../assets/image/ff3_01.png'),
+        require('../../../assets/image/ff3_02.png'),
+        require('../../../assets/image/ff3_03.png'),
+        require('../../../assets/image/ff3_04.png'),
+        require('../../../assets/image/ff3_05.png'),
+        require('../../../assets/image/ff3_06.png'),
+        require('../../../assets/image/ff3_07.png'),
+        require('../../../assets/image/ff3_08.png'),
+        require('../../../assets/image/ff3_09.png'),
+        require('../../../assets/image/ff3_10.png'),
+        require('../../../assets/image/ff3_11.png'),
+        require('../../../assets/image/ff3_12.png'),
+        require('../../../assets/image/ff3_13.png'),
+        require('../../../assets/image/ff3_14.png'),
+        require('../../../assets/image/ff3_15.png'),
+        require('../../../assets/image/ff3_16.png'),
+        require('../../../assets/image/ff3_17.png'),
+        require('../../../assets/image/ff3_18.png'),
+        require('../../../assets/image/ff3_19.png'),
+        require('../../../assets/image/ff3_20.png'),
       ]);
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      //   {
-      //     image:
-      //       'https://cdn.pixabay.com/photo/2015/12/31/12/46/mystical-1115610_1280.jpg',
-      //   },
-      // ]);
     }
-  }, []);
+  }, [
+    LEVEL_NAME,
+    sub_levels1,
+    sub_levels2,
+    sub_levels3,
+    sub_levels4,
+    sub_levels5,
+    sub_levels6,
+  ]);
+
+  useEffect(() => {
+    console.log(category);
+  }, [LEVEL_NAME]);
   useEffect(() => {
     setIsTimer(timerState);
   }, [timerState]);
   useEffect(() => {
-    if (timer === 0) {
-      setModalLoseVisible(true);
-    }
-  }, [timer]);
-  useEffect(() => {
     setScore(scoreState);
   }, [scoreState]);
-  useEffect(() => {
-    setSubLvl(sub_levels);
-    console.log(sub_levels);
-  }, [sub_levels]);
+
+  const onNext = () => {
+    if (LEVEL_NAME === 'Animals' && main_level >= 2) {
+      dispatch(setMainLvlName('People'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(2));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'People' && main_level >= 3) {
+      dispatch(setMainLvlName('Sports'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(3));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'Sports' && main_level >= 4) {
+      dispatch(setMainLvlName('Fantasy 1'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(4));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'Fantasy 1' && main_level >= 5) {
+      dispatch(setMainLvlName('Fantasy 2'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(5));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'Fantasy 2' && main_level >= 6) {
+      dispatch(setMainLvlName('Fantasy 3'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(6));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'Fantasy 3') {
+      alert('All Levels are unlocked!!');
+    } else {
+      alert('Next Level is Locked');
+    }
+  };
+  const onBack = () => {
+    if (LEVEL_NAME === 'Fantasy 3') {
+      dispatch(setMainLvlName('Fantasy 2'));
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(5));
+      // dispatch(setSubLvlCompleted([]));
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+    } else if (LEVEL_NAME === 'Fantasy 2') {
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(4));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+      dispatch(setMainLvlName('Fantasy 1'));
+    } else if (LEVEL_NAME === 'Fantasy 1') {
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(3));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+      dispatch(setMainLvlName('Sports'));
+    } else if (LEVEL_NAME === 'Sports') {
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(2));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+      dispatch(setMainLvlName('People'));
+      // dispatch(setSubLvlCompleted([]));
+    } else if (LEVEL_NAME === 'People') {
+      // dispatch(setSubLvlCompleted([]));
+
+      // dispatch(setSublevel(1));
+      dispatch(setMainIndex(1));
+      // dispatch(setSubLvlCompleted([]));
+
+      // firestore()
+      //   .collection('gameRecord')
+      //   .doc(auth().currentUser.uid)
+      //   .update({
+      //     // subLevel: sublvlState + 1,
+      //     subLevel: 1,
+      //     subLevelCompleted: [],
+
+      //     // score: scoreState + 50 ,
+      //   })
+      //   .then(() => {
+      //     console.log('data updated');
+      //   });
+      dispatch(setMainLvlName('Animals'));
+    }
+  };
+
   // console.log(category);
 
   // // }, 2000);
@@ -453,55 +485,50 @@ const SubScreen = props => {
 
   const data = [
     {
-      level: '1st',
-      img: 'https://img.freepik.com/free-vector/seamless-pattern-vintage-stone-hexagonal-tiles-textured-paving-background-bright-geometric-tiles_172107-1295.jpg?w=826&t=st=1685810197~exp=1685810797~hmac=a1d2e1d1cb94bc52666246398c4da5d44cb28250fe5ae59d5fde28f04278a2e5',
-      color: '#88CCEE',
-      difficulty: 'Begginer',
-      onPress: () => {
-        setInfoModalVisible(true);
-        // props.navigation.navigate('Game', {
-        //   data: category,
-        //   tiles: 2,
-        // });
-      },
-      img: require('../../../assets/image/level01.png'),
-      isLocked: false,
-
-      // .map(item => {
-      //   return item.image;
-      // }),
-    },
-    {
-      level: '2nd',
-
-      img: 'https://cdn.pixabay.com/photo/2022/03/24/16/30/gardener-7089417_1280.png',
-      color: '#55BBAA',
-      difficulty: 'Easy',
+      level: 1,
 
       onPress: () => {
+        // setInfoModalVisible(true);
         props.navigation.navigate('Game', {
           data: category,
-          tiles: 3,
+          tiles: 1,
+          flipTime: 1500,
+          lvl: 1,
+        });
+      },
+    },
+    {
+      level: 2,
+
+      onPress: () => {
+        dispatch(setTimerState(true));
+        props.navigation.navigate('Game', {
+          data: category,
+          tiles: 2,
+          flipTime: 1800,
+          lvl: 2,
         });
       },
       img: require('../../../assets/image/level02.png'),
-      isLocked: true,
 
       // .map(item => {
       //   return item.image;
       // }),
     },
     {
-      level: '3rd',
+      level: 3,
 
       img: 'https://cdn.pixabay.com/photo/2013/07/13/10/51/football-157930_1280.png',
       color: '#FFBB66',
       difficulty: 'Intermediate',
 
       onPress: () => {
+        dispatch(setTimerState(true));
         props.navigation.navigate('Game', {
           data: category,
-          tiles: 4,
+          tiles: 3,
+          flipTime: 2200,
+          lvl: 3,
         });
       },
       img: require('../../../assets/image/level03.png'),
@@ -512,16 +539,19 @@ const SubScreen = props => {
       // }),
     },
     {
-      level: '4th',
+      level: 4,
 
       img: 'https://cdn.pixabay.com/photo/2019/02/19/16/53/rock-4007203_1280.png',
       color: '#FF8866',
       difficulty: 'Advanced',
 
       onPress: () => {
+        dispatch(setTimerState(true));
         props.navigation.navigate('Game', {
           data: category,
-          tiles: 5,
+          tiles: 4,
+          flipTime: 2700,
+          lvl: 4,
         });
       },
       img: require('../../../assets/image/level04.png'),
@@ -532,345 +562,383 @@ const SubScreen = props => {
       // }),
     },
     {
-      level: '5th',
+      level: 5,
+      onPress: () => {
+        dispatch(setTimerState(true));
+        props.navigation.navigate('Game', {
+          data: category,
+          tiles: 5,
+          flipTime: 3000,
+          lvl: 5,
+        });
+      },
 
-      img: 'https://cdn.pixabay.com/photo/2021/02/07/19/37/drawing-5992475_1280.png',
-      color: '#FF5555',
-      difficulty: 'Expert',
+      // .map(item => {
+      //   return item.image;
+      // }),
+    },
+    {
+      level: 6,
 
       onPress: () => {
+        dispatch(setTimerState(true));
         props.navigation.navigate('Game', {
           data: category,
           tiles: 6,
+          flipTime: 3200,
+          lvl: 6,
         });
       },
-      img: require('../../../assets/image/level05.png'),
-      isLocked: true,
 
       // .map(item => {
       //   return item.image;
       // }),
     },
     {
-      level: '6th',
-
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-      color: '#AA4488',
-      difficulty: 'Master',
+      level: 7,
 
       onPress: () => {
-        props.navigation.replace('Game', {
-          data: category,
-          tiles: 7,
-        });
-      },
-      img: require('../../../assets/image/level06.png'),
-      isLocked: true,
-
-      // .map(item => {
-      //   return item.image;
-      // }),
-    },
-    {
-      level: '7th',
-
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-      color: '#8844AA',
-      difficulty: 'Prodigy',
-
-      onPress: () => {
-        props.navigation.replace('Game', {
-          data: category,
-          tiles: 8,
-        });
-      },
-      img: require('../../../assets/image/level07.png'),
-      isLocked: true,
-
-      // .map(item => {
-      //   return item.image;
-      // }),
-    },
-    {
-      level: '8th',
-
-      img: 'https://cdn.pixabay.com/photo/2017/12/16/22/26/snowflake-3023441_1280.png',
-      color: '#332288',
-      difficulty: 'Grandmaster',
-
-      onPress: () => {
+        dispatch(setTimerState(true));
         props.navigation.navigate('Game', {
           data: category,
-          tiles: 9,
+          tiles: 7,
+          flipTime: 3500,
+          lvl: 7,
         });
       },
-      img: require('../../../assets/image/level08.png'),
-      isLocked: true,
+
+      // .map(item => {
+      //   return item.image;
+      // }),
+    },
+    {
+      level: 8,
+
+      onPress: () => {
+        dispatch(setTimerState(true));
+        props.navigation.navigate('Game', {
+          data: category,
+          tiles: 8,
+          flipTime: 3700,
+          lvl: 8,
+        });
+      },
+
       // .map(item => {
       //   return item.image;
       // }),
     },
   ];
   return (
-    // <View
-    //   style={{
-    //     flex: 1,
-    //     // justifyContent: 'center',
-    //     // alignItems: 'center',
-    //     backgroundColor: '#00b200',
-    //   }}>
     <AppBackground>
-      <View
-        style={{
-          flexDirection: 'row-reverse',
-          marginTop: 45,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}>
-        <View
-          style={{
-            width: '30%',
-            height: 40,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-            marginEnd: 10,
-            borderRadius: 15,
-            flexDirection: 'row',
+      <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
             alignItems: 'center',
-            justifyContent: 'space-evenly',
-          }}>
-          <AntDesign name="star" size={24} color="#FFB600" />
-          <Text
-            style={{
-              fontSize: 20,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: 'white',
-              marginTop: 5,
-            }}>
-            {score}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          width: '100%',
-          height: 100,
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          alignItems: 'center',
-        }}>
-        <Touchableopacity style={{}} onPress={() => {}}>
-          <Image
-            source={require('../../../assets/image/back.png')}
-            style={{width: 60, height: 60}}
-          />
-        </Touchableopacity>
-        <Text
-          style={{
-            fontSize: 60,
-            fontFamily: 'LeagueSpartan-SemiBold',
-            color: 'white',
-          }}>
-          {props.route.params.name}
-        </Text>
-        <Touchableopacity style={{}} onPress={() => {}}>
-          <Image
-            source={require('../../../assets/image/next.png')}
-            style={{width: 60, height: 60}}
-          />
-        </Touchableopacity>
-      </View>
-
-      <View
-        style={{
-          width: 100,
-          height: 30,
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          flexDirection: 'row',
-          borderRadius: 15,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          alignSelf: 'center',
-        }}>
-        <AntDesign
-          name="clockcircleo"
-          size={20}
-          color="white"
-          style={{marginStart: 14}}
-        />
-        <View
-          style={{
-            width: '70%',
             justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'row',
+            flexGrow: 1,
           }}>
-          {timerState ? (
-            <Timer />
-          ) : (
+          <View
+            style={{
+              flexDirection: 'row-reverse',
+              marginTop: 45,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+            }}>
+            <View
+              style={{
+                width: '30%',
+                height: 40,
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                marginEnd: 10,
+                borderRadius: 15,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-evenly',
+              }}>
+              <AntDesign name="star" size={24} color="#FFB600" />
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  color: 'white',
+                  // marginTop: 5,
+                }}>
+                {score}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              width: '100%',
+              height: 100,
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+            }}>
+            <Touchableopacity
+              style={{}}
+              onPress={() => {
+                onBack();
+              }}>
+              <Image
+                source={require('../../../assets/image/back.png')}
+                style={{width: 60, height: 60}}
+              />
+            </Touchableopacity>
+            {/* <View></View> */}
             <Text
               style={{
-                fontSize: 14,
+                width: '83%',
+                fontSize: 34.5,
                 fontFamily: 'LeagueSpartan-SemiBold',
                 color: 'white',
-                marginTop: 5,
                 textAlign: 'center',
+                marginBottom: 5,
               }}>
-              Start
+              {LEVEL_NAME}
             </Text>
-          )}
-
-          {/* <Text
-            style={{
-              fontSize: 16,
-              fontFamily: 'LeagueSpartan-SemiBold',
-              color: 'white',
-              marginTop: 5,
-              textAlign: 'center',
-            }}>
-            {time}
-          </Text> */}
-        </View>
-      </View>
-      <FlatList
-        style={{alignSelf: 'center'}}
-        data={data}
-        numColumns={3}
-        renderItem={({item, index}) => {
-          return (
             <Touchableopacity
-              disabled={subLvl < index + 1 ? true : false}
-              onPress={item.onPress}
-              style={{
-                alignSelf: 'center',
-                // width: '28%',
-                // height: 135,
-                margin: 8,
-                // backgroundColor: 'white',
-                borderRadius: 15,
-                alignItems: 'center',
-                justifyContent: 'center',
-                opacity: subLvl < index + 1 ? 0.5 : 1,
+              style={{}}
+              onPress={() => {
+                onNext();
               }}>
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  width: '100%',
-                }}>
-                <ImageBackground
-                  source={item.img}
-                  style={{
-                    width: 105,
-                    height: 105,
-                    marginTop: 6,
-                    borderRadius: 10,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {subLvl < index + 1 ? (
-                    <Ionicons
-                      style={{alignSelf: 'center'}}
-                      name="lock-closed"
-                      size={70}
-                      color="red"
-                    />
-                  ) : (
-                    ''
-                  )}
-                </ImageBackground>
-                {/* <Text
-                  style={{
-                    fontFamily: 'LeagueSpartan-SemiBold',
-                    fontSize: 18,
-                    color: '#03D1FF',
-                    marginTop: 8,
-                  }}>
-                  {item.name} Tiles
-                </Text> */}
-              </View>
+              <Animated.View style={{opacity: fadeAnim}}>
+                <Image
+                  source={require('../../../assets/image/next.png')}
+                  style={{width: 60, height: 60}}
+                />
+              </Animated.View>
             </Touchableopacity>
-          );
-        }}
-      />
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flex: 1,
-          marginBottom: 40,
-        }}>
-        <Touchableopacity
-          onPress={() => {
-            props.navigation.goBack();
-          }}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 40,
-            margin: 10,
-            backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Ionicons name="arrow-back" size={40} color="#00b200" />
-        </Touchableopacity>
-        <Touchableopacity
-          onPress={() => {
-            setSettingModal(true);
-          }}
-          style={{
-            width: 60,
-            height: 60,
-            borderRadius: 40,
-            margin: 10,
-            backgroundColor: 'white',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Ionicons name="settings" size={40} color="#00b200" />
-        </Touchableopacity>
-      </View>
-      <GameStartModal
-        onPressStart={() => {
-          dispatch(setTimerState(true));
-          setInfoModalVisible(false);
-          props.navigation.navigate('Game', {
-            data: category,
-            tiles: 2,
-          });
-        }}
-        onPressCancel={() => {
-          setInfoModalVisible(false);
-        }}
-        visible={infoModalVisible}
-      />
-      <LoseModal
-        onPress={() => {
-          if (timer === 0) {
-            props.navigation.navigation('Main');
-            setModalLoseVisible(false);
-            dispatch(setTimerState(false));
-          } else {
-            props.navigation.goBack();
-            setModalLoseVisible(false);
-          }
-        }}
-        visible={modalLoseVisible}
-      />
-      <SettingModal
-        onPressK={() => {
-          setSettingModal(false);
-          PlaySound();
-        }}
-        visible={settingModal}
-        onPressC={() => {
-          setSettingModal(false);
-          PlaySound();
-        }}
-      />
+          </View>
+          <View>
+            {/* {timerState ? (
+          <View
+            style={{
+              width: 100,
+              height: 40,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              flexDirection: 'row',
+              borderRadius: 15,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              alignSelf: 'center',
+            }}>
+            <AntDesign
+              name="clockcircleo"
+              size={20}
+              color="white"
+              style={{marginStart: 14}}
+            />
+            <View
+              style={{
+                width: '70%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+              }}>
+              <Timer />
+            </View>
+          </View>
+        ) : (
+          <Text></Text>
+        )} */}
+          </View>
+          <FlatList
+            style={{alignSelf: 'center'}}
+            data={data}
+            numColumns={3}
+            renderItem={({item, index}) => {
+              return (
+                <Touchableopacity
+                  disabled={subLvl < index + 1 ? true : false}
+                  onPress={() => {
+                    item.onPress();
+                    dispatch(setIndex(item.level));
+                  }}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 60,
+                    overflow: 'hidden',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    margin: 10,
+                    opacity: subLvl < index + 1 ? 0.5 : 1,
+                  }}>
+                  {/* {subLvl > index + 1 ? (
+                <Entypo name="check" color="#0bda51" size={50} />
+              ) : (
+                ''
+              )} */}
+                  <LinearGradient
+                    colors={['#FF9800', '#FF5722']}
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                    style={styles.gradient}>
+                    {/* {subLvl > index + 1 ? (
+                  <Entypo name="check" color="#0bda51" size={50} />
+                ) : (
+                  ''
+                )} */}
+                    {subLvl < index + 1 ? (
+                      <Ionicons
+                        style={{alignSelf: 'center'}}
+                        name="lock-closed"
+                        size={50}
+                        color="white"
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        {subLvl > index + 1 ? (
+                          // subLevelCompleted.lvlCmplt.includes(index + 1)
+                          // subLevelCompleted.includes(index + 1)
+                          <Entypo name="check" color="#0bda51" size={50} />
+                        ) : (
+                          <View
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Text style={styles.levelText}>{item.level}</Text>
+                          </View>
+                        )}
+                      </View>
+                    )}
+                  </LinearGradient>
+                </Touchableopacity>
+              );
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flex: 1,
+              marginBottom: 40,
+              width: '100%',
+            }}>
+            <Touchableopacity
+              // disabled={subLvl < index + 1 ? true : false}
+              onPress={() => {
+                props.navigation.goBack();
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 40,
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 10,
+                opacity: 1,
+              }}>
+              <LinearGradient
+                colors={['#FF9800', '#FF5722']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+                style={styles.gradient}>
+                <Ionicons name="arrow-back" size={40} color="white" />
+                {/* <Ionicons
+              style={{alignSelf: 'center'}}
+              name="lock-closed"
+              size={50}
+              color="white"
+            /> */}
+              </LinearGradient>
+            </Touchableopacity>
+            <Touchableopacity
+              // disabled={subLvl < index + 1 ? true : false}
+              onPress={() => {
+                // props.navigation.goBack();
+                setSettingModal(true);
+              }}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 40,
+                overflow: 'hidden',
+                justifyContent: 'center',
+                alignItems: 'center',
+                margin: 10,
+                opacity: 1,
+              }}>
+              <LinearGradient
+                colors={['#FF9800', '#FF5722']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+                style={styles.gradient}>
+                <Ionicons name="settings" size={40} color="white" />
+              </LinearGradient>
+            </Touchableopacity>
+          </View>
+          <GameStartModal
+            onPressStart={() => {
+              // console.log(category);
+              dispatch(setTimerState(true));
+              setInfoModalVisible(false);
+            }}
+            onPressCancel={() => {
+              setInfoModalVisible(false);
+            }}
+            visible={infoModalVisible}
+          />
+
+          <SettingModal
+            onPressLogOut={() => {
+              props.navigation.navigate('Login');
+              setSettingModal(false);
+            }}
+            onPressK={() => {
+              setSettingModal(false);
+            }}
+            visible={settingModal}
+            onPressC={() => {
+              setSettingModal(false);
+            }}
+          />
+        </ScrollView>
+      </GestureHandlerRootView>
     </AppBackground>
   );
 };
 
+const styles = StyleSheet.create({
+  button: {
+    width: 100,
+    height: 100,
+    borderRadius: 60,
+    overflow: 'hidden',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+  },
+  gradient: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  levelText: {
+    fontSize: 50,
+    color: '#FFF',
+    fontWeight: '900',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+});
 export default SubScreen;

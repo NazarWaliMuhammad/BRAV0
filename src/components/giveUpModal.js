@@ -9,28 +9,17 @@ import {
   Dimensions,
 } from 'react-native';
 
-import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
 import {useDispatch, useSelector} from 'react-redux';
 import Touchableopacity from './Touchableopacity';
-import {setScore, setSublevel, setTimer} from '../../redux/Action/Action';
+// import Touchableopacity from '../../components/Touchableopacity';
+
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-const LoseModal = props => {
+const GiveUpModal = props => {
   const {t, i18n} = useTranslation();
   const dispatch = useDispatch();
-  const [timerState, setTimerState] = useState(null);
-  const [scoreState, setScoreState] = useState(null);
-  const timer = useSelector(state => state.time);
-  const score = useSelector(state => state.score);
-  useEffect(() => {
-    setTimerState(timer);
-  }, [timer]);
-
-  useEffect(() => {
-    setScoreState(score);
-  }, [score]);
   //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
   //   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 
@@ -51,17 +40,7 @@ const LoseModal = props => {
   //       </View>
   //     );
   //   };
-  const onLoseFirebase = () => {
-    firestore()
-      .collection('gameRecord')
-      .doc(auth().currentUser.uid)
-      .update({
-        subLevel: 1,
-      })
-      .then(() => {
-        console.log('User updated!');
-      });
-  };
+
   return (
     <Modal transparent={true} visible={props.visible}>
       <View
@@ -90,15 +69,16 @@ const LoseModal = props => {
             <Text
               style={{
                 fontFamily: 'LeagueSpartan-Bold',
-                fontSize: 40,
+                fontSize: 30,
                 color: '#03D1FF',
                 // marginTop: 30,
               }}>
-              GAME OVER!!
+              {t('Do you give up')}
             </Text>
           </View>
           <View
             style={{
+              flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
               alignSelf: 'center',
@@ -107,18 +87,12 @@ const LoseModal = props => {
             }}>
             <Touchableopacity
               onPress={() => {
-                if (timerState === 0) {
-                  dispatch(setSublevel(1));
-                  onLoseFirebase();
-                  dispatch(setTimer(300));
-                }
-
-                props.onPress();
+                props.onPressNo();
               }}
               style={{
-                // marginTop: 10,
+                marginEnd: 8,
                 width: '40%',
-                height: 50,
+                height: 40,
                 backgroundColor: '#03D1FF',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -131,7 +105,30 @@ const LoseModal = props => {
                   color: 'white',
                   // marginTop: 30,
                 }}>
-                {t('Retry')}
+                {t('No')}
+              </Text>
+            </Touchableopacity>
+            <Touchableopacity
+              onPress={() => {
+                props.onPressSi();
+              }}
+              style={{
+                // marginTop: 10,
+                width: '40%',
+                height: 40,
+                backgroundColor: '#03D1FF',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 10,
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'LeagueSpartan-SemiBold',
+                  fontSize: 24,
+                  color: 'white',
+                  // marginTop: 30,
+                }}>
+                {t('Yes')}
               </Text>
             </Touchableopacity>
           </View>
@@ -141,4 +138,4 @@ const LoseModal = props => {
   );
 };
 
-export default LoseModal;
+export default GiveUpModal;

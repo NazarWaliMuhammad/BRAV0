@@ -8,7 +8,10 @@ import {
   View,
   Dimensions,
   ImageBackground,
+  ScrollView,
 } from 'react-native';
+// import {GestureHandlerRootViewProps} from 'react-native-gesture-handler/lib/typescript/components/GestureHandlerRootView';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import PlaySound from '../../assets/sound/pressSound';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -29,9 +32,20 @@ const AppBackground = props => {
     //   {props.children}
     // </LinearGradient>
     <ImageBackground
-      source={require('../../assets/image/appBackground.png')}
+      source={require('../../assets/image/appBg.jpg')}
       style={{flex: 1}}>
+      {/* <GestureHandlerRootView style={{flex: 1}}>
+        <ScrollView
+          contentContainerStyle={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexGrow: 1,
+          }}
+          // style={styles.sview}
+        > */}
       {props.children}
+      {/* </ScrollView>
+      </GestureHandlerRootView> */}
     </ImageBackground>
   );
 };

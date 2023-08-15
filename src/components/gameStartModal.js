@@ -1,42 +1,11 @@
-import React, {useState} from 'react';
-import {
-  Image,
-  Modal,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  Dimensions,
-} from 'react-native';
-
-import PlaySound from '../../assets/sound/pressSound';
+import React from 'react';
+import {Modal, Text, View} from 'react-native';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useTranslation} from 'react-i18next';
 import Touchableopacity from './Touchableopacity';
 const GameStartModal = props => {
   const {t, i18n} = useTranslation();
-  const [soundIcon, setSoundIcon] = useState(true);
-  const [musicIcon, setMusicIcon] = useState(true);
 
-  //   const SLIDER_WIDTH = Dimensions.get('window').width + 30;
-  //   const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
-  //   const renderItem = ({item}) => {
-  //     return (
-  //       <View
-  //         style={{
-  //           //   borderWidth: 1,
-  //           padding: 20,
-  //           borderRadius: 20,
-  //           alignItems: 'center',
-  //           backgroundColor: 'white',
-  //         }}>
-  //         <Image source={{uri: item.url}} style={{width: 200, height: 200}} />
-  //         <Text style={{marginVertical: 10, fontSize: 20, fontWeight: 'bold'}}>
-  //           {item.name}
-  //         </Text>
-  //       </View>
-  //     );
-  //   };
   return (
     <Modal transparent={true} visible={props.visible}>
       <View
@@ -50,62 +19,78 @@ const GameStartModal = props => {
           style={{
             backgroundColor: 'white',
             width: '83%',
-            height: 210,
+            height: 200,
             borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <View
-            style={{flexDirection: 'row-reverse', width: '100%', height: 30}}>
+            style={{
+              flexDirection: 'row-reverse',
+              width: '100%',
+              height: 20,
+              alignItems: 'center',
+            }}>
             <Touchableopacity
               onPress={() => {
                 props.onPressCancel();
               }}
-              style={{marginEnd: 8, marginTop: 8}}>
+              style={{
+                marginEnd: 8,
+                height: 30,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
               <Entypo name="cross" size={30} color="#d3d3d3" />
             </Touchableopacity>
           </View>
-          <View
+          {/* <View
             style={{
               justifyContent: 'center',
               alignItems: 'center',
 
               width: '100%',
-              height: 40,
-            }}>
-            <Text
-              style={{
-                fontFamily: 'LeagueSpartan-Bold',
-                fontSize: 35,
-                color: '#FFB600',
-              }}>
-              {t('Information')}
-            </Text>
-          </View>
-          <View
+              // height: 40,
+            }}> */}
+          <Text
             style={{
-              width: '60%',
+              fontFamily: 'LeagueSpartan-Bold',
+              fontSize: 30,
+              color: '#FFB600',
+              paddingVertical: 5,
+            }}>
+            {t('Information')}
+          </Text>
+          {/* </View> */}
+          {/* <View
+            style={{
+              width: '80%',
               justifyContent: 'center',
               alignItems: 'center',
               // marginTop: 10,
               alignSelf: 'center',
-              height: 40,
+              // height: 50,
+            }}> */}
+          <Text
+            style={{
+              width: '90%',
+              fontFamily: 'LeagueSpartan-Medium',
+              textAlign: 'center',
+              fontSize: 19,
+              color: 'gray',
+              paddingTop: 5,
             }}>
-            <Text
-              style={{
-                fontFamily: 'LeagueSpartan-Medium',
-                textAlign: 'center',
-                fontSize: 19,
-                color: 'gray',
-              }}>
-              {t('Complete All SubLevels In 5 Minutes')}
-            </Text>
-          </View>
+            {t('Complete All SubLevels In 5 Minutes')}
+          </Text>
+          {/* </View> */}
           <View
             style={{
-              width: '100%',
+              // width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              height: 100,
+              // height: 80,
+              paddingTop: 15,
             }}>
             <Touchableopacity
               onPress={props.onPressCancel}
@@ -129,7 +114,9 @@ const GameStartModal = props => {
               </Text>
             </Touchableopacity>
             <Touchableopacity
-              onPress={props.onPressStart}
+              onPress={() => {
+                props.onPressStart();
+              }}
               style={{
                 alignItems: 'center',
                 justifyContent: 'center',

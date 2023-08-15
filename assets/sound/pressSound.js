@@ -12,12 +12,6 @@ export default PlaySound = () => {
       return;
     }
     // loaded successfully
-    console.log(
-      'duration in seconds: ' +
-        whoosh.getDuration() +
-        'number of channels: ' +
-        whoosh.getNumberOfChannels(),
-    );
 
     // Play the sound with an onEnd callback
     whoosh.play(success => {
