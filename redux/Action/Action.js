@@ -20,6 +20,7 @@ import {
   SUB_LEVELS4,
   SUB_LEVELS5,
   SUB_LEVELS6,
+  FLIP_INDEX,
 } from '../ActionTyped';
 export const setTimer = time => ({
   //   return {
@@ -141,4 +142,8 @@ export const setMainLvlCompleted = MainlvlCmplt => ({
   type: MAINLVLCOMPLETED,
   payload: MainlvlCmplt,
   //   };
+});
+export const setFlipIndex = Findex => ({
+  type: FLIP_INDEX,
+  payload: Findex,
 });

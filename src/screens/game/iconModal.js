@@ -3,18 +3,22 @@ import {Image, Modal, View, Text} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // import {Text} from 'react-native-svg';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useDispatch, useSelector} from 'react-redux';
+import {setFlipIndex} from '../../../redux/Action/Action';
 
 import Touchableopacity from '../../components/Touchableopacity';
 const IconModal = props => {
   const imgs = props.data;
   const tilesImgs = props.tilesImgs;
   const imgsLength = props.dataLength;
-
+  const flipIndex = useSelector(state => state.flipIndex);
+  // console.log(flipIndex);
+  const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [rightAnswers, setRightAnswers] = useState(0);
   const [wrongAnswers, setWronngAnswers] = useState(0);
-
+  // console.log(tilesImgs);
   const [pressed, setPressed] = useState(0);
 
   const shuffleImgs = () => {
@@ -29,10 +33,10 @@ const IconModal = props => {
       }
     }
     setData(randomImg);
-    console.log(randomImg.length);
+    // console.log(randomImg.length);
   };
   useEffect(() => {
-    console.log(imgsLength);
+    // console.log(imgsLength);
     setPressed(0);
     setCurrentIndex(0);
     shuffleImgs();
@@ -42,9 +46,12 @@ const IconModal = props => {
   //   if (!tilesImgs.includes(data[0])) {
   //     props.loseModal();
   //   }
+  // console.log(data[currentIndex]);
+
   // };
   const checkImageUp = () => {
     if (tilesImgs.includes(data[currentIndex])) {
+      flipIndex.push(data[currentIndex]);
       setRightAnswers(prev => prev + 1);
       setCurrentIndex(prev => prev + 1);
     } else {

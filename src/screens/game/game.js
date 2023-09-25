@@ -34,6 +34,7 @@ import {
 } from 'react-native-gesture-handler';
 import GameReset from '../../components/gameReset';
 import CardShowing from '../../components/cardShowing';
+import {INDEX} from '../../../redux/ActionTyped';
 
 const GameScreen = props => {
   const {t, i18n} = useTranslation();
@@ -47,6 +48,8 @@ const GameScreen = props => {
   const [length, setLength] = useState(null);
   const [score, setScore] = useState(null);
   const scoreState = useSelector(state => state.score);
+  const flipIndex = useSelector(state => state.flipIndex);
+  // console.log(flipIndex);
   // const index = useSelector(state => state.score);
   const index = useSelector(state => state.index);
   const time = useSelector(state => state.time);
@@ -83,12 +86,15 @@ const GameScreen = props => {
         continue;
       } else {
         randomImg.push(Carouseldata[randomIndex]);
+        // console.log(Carouseldata[randomIndex] + 'hhhhhh');
       }
     }
     setData(randomImg);
+    // console.log(randomImg + 'cheeeck');
     setLength(randomImg.length);
     setAttempts(randomImg.length);
   };
+  // console.log(data);
 
   useEffect(() => {
     setScore(scoreState);
@@ -141,18 +147,40 @@ const GameScreen = props => {
   //     setModalLoseVisible(true);
   //     setModalVisible(false);
   //   }
+
   // }, [timer]);
+  const FlippingLogics = item => {
+    if (!flipIndex.includes(item)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  // useEffect(() => {
+  //   if (!flipIndex.includes(index)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }, [flipIndex]);
   useEffect(() => {
-    generateRandomImages();
-    // setModalGreetingVisible(true);
-    // length();
     setTimeout(() => {
       setFlipped(true);
       dispatch(setTimerPlaying(true));
       setModalVisible(true);
     }, flipTimer);
+  }, [flipped]);
+  useEffect(() => {
+    generateRandomImages();
+  }, []);
+  useEffect(() => {
+    if (index === 1) {
+      setFlipped(true);
+    }
+    setFlipped();
   }, []);
 
+  // useEffect()
   return (
     <AppBackground>
       <GestureHandlerRootView style={{flex: 1}}>
@@ -174,7 +202,7 @@ const GameScreen = props => {
             }}>
             <Image
               source={require('../../../assets/image/bravo.png')}
-              style={{width: 120, height: 120, marginTop: 40}}
+              style={{width: 100, height: 100, marginTop: 40}}
             />
             <View
               style={{
@@ -278,42 +306,41 @@ const GameScreen = props => {
             style={{alignSelf: 'center'}}
             data={data}
             numColumns={3}
-            renderItem={({item}) => {
+            renderItem={({item, index}) => {
               return (
                 <View>
                   <FlipCard
                     friction={6}
                     perspective={1000}
                     flipHorizontal={true}
-                    flip={flipped}
-                    clickable={true}>
-                    <View>
-                      <Touchableopacity
-                        onPress={() => {}}
+                    flip={flipped ? FlippingLogics(item) : false}
+                    clickable={false}>
+                    <View
+                      style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        alignSelf: 'center',
+                      }}>
+                      {/* <Touchableopacity onPress={() => {}}> */}
+                      <View
                         style={{
+                          // flexDirection: 'row',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          alignSelf: 'center',
+                          height: 90,
+                          width: 90,
+                          backgroundColor: 'white',
+                          borderRadius: 10,
+                          margin: 4,
+                          borderWidth: 5,
+                          borderColor: '#FFB600',
                         }}>
-                        <View
-                          style={{
-                            // flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: 90,
-                            width: 90,
-                            backgroundColor: 'white',
-                            borderRadius: 10,
-                            margin: 4,
-                            borderWidth: 5,
-                            borderColor: '#FFB600',
-                          }}>
-                          <Image
-                            source={item}
-                            style={{width: '100%', height: '100%'}}
-                          />
-                        </View>
-                      </Touchableopacity>
+                        <Image
+                          source={item}
+                          style={{width: '100%', height: '100%'}}
+                        />
+                      </View>
+                      {/* </Touchableopacity> */}
                     </View>
                     <View>
                       <Touchableopacity
@@ -414,7 +441,7 @@ const GameScreen = props => {
             imgs={data}
             onPressCancel={() => {
               props.navigation.navigate('Main');
-              // setModalVisible(false);
+              setModalVisible(false);
               setModalLoseVisible(false);
             }}
             onPressRetry={() => {
@@ -428,6 +455,7 @@ const GameScreen = props => {
             visible={modalGiveUpVisible}
             onPressSi={() => {
               setModalLoseVisible(true);
+              setModalVisible(false);
               setModalGiveUpVisible(false);
               dispatch(setTimer(50));
               dispatch(setTimerPlaying(false));

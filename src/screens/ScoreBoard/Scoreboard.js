@@ -181,7 +181,7 @@ const Scoreboard = props => {
                   alignSelf: 'center',
                   // width: '20%',
                 }}>
-                Top {item.completed}
+                Top{item.completed}
               </Text>
             )}
           </View>

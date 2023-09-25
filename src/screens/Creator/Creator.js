@@ -11,11 +11,11 @@ import {
   View,
 } from 'react-native';
 import {useTranslation} from 'react-i18next';
-import AppBackground from '../../components/appBackground ';
+// import AppBackground from '../../components/appBackground ';
 
-import auth from '@react-native-firebase/auth';
+// import auth from '@react-native-firebase/auth';
 import {useDispatch, useSelector} from 'react-redux';
-import {setSound, setMusic} from '../../../redux/Action/Action';
+// import {setSound, setMusic} from '../../../redux/Action/Action';
 const CreatorScreen = props => {
   const {i18n} = useTranslation();
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const CreatorScreen = props => {
 
   useEffect(() => {
     setTimeout(() => {
-      props.navigation.navigate('FirstTimeLogin');
+      props.navigation.replace('FirstTimeLogin');
     }, 3000);
   }, []);
   return (

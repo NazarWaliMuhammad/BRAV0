@@ -55,7 +55,30 @@ const SubScreen = props => {
   // console.log(sub_levels + 'levels');
   // const [value, setValue] = useState(0);
   // const fadeAnim = useState(new Animated.Value(0))[0];
-
+  const array = [
+    require('../../../assets/image/ff2_01.png'),
+    require('../../../assets/image/ff2_02.png'),
+    require('../../../assets/image/ff2_03.png'),
+    require('../../../assets/image/ff2_04.png'),
+    require('../../../assets/image/ff2_05.png'),
+    require('../../../assets/image/ff2_06.png'),
+    require('../../../assets/image/ff2_07.png'),
+    require('../../../assets/image/ff2_08.png'),
+    require('../../../assets/image/ff2_09.png'),
+    require('../../../assets/image/ff2_10.png'),
+    require('../../../assets/image/ff2_11.png'),
+    require('../../../assets/image/ff2_12.png'),
+    require('../../../assets/image/ff2_13.png'),
+    require('../../../assets/image/ff2_14.png'),
+    require('../../../assets/image/ff2_15.png'),
+    require('../../../assets/image/ff2_16.png'),
+    require('../../../assets/image/ff2_17.png'),
+    require('../../../assets/image/ff2_18.png'),
+    require('../../../assets/image/ff2_19.png'),
+    require('../../../assets/image/ff2_20.png'),
+  ];
+  const index = 1;
+  console.log(array[2]);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   // const fadeAnim = useRef(new Animated.Value(0)).current;
   let blinkingAnimation = useRef(null);
@@ -505,7 +528,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 2,
-          flipTime: 1800,
+          flipTime: 2000,
           lvl: 2,
         });
       },
@@ -527,7 +550,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 3,
-          flipTime: 2200,
+          flipTime: 2500,
           lvl: 3,
         });
       },
@@ -550,7 +573,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 4,
-          flipTime: 2700,
+          flipTime: 3200,
           lvl: 4,
         });
       },
@@ -568,7 +591,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 5,
-          flipTime: 3000,
+          flipTime: 3800,
           lvl: 5,
         });
       },
@@ -585,7 +608,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 6,
-          flipTime: 3200,
+          flipTime: 4500,
           lvl: 6,
         });
       },
@@ -602,7 +625,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 7,
-          flipTime: 3500,
+          flipTime: 5300,
           lvl: 7,
         });
       },
@@ -619,7 +642,7 @@ const SubScreen = props => {
         props.navigation.navigate('Game', {
           data: category,
           tiles: 8,
-          flipTime: 3700,
+          flipTime: 6000,
           lvl: 8,
         });
       },

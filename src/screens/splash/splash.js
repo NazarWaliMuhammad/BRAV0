@@ -62,7 +62,7 @@ const SplashScreen = props => {
           }}>
           <Image
             source={require('../../../assets/image/bravo.png')}
-            style={{width: 300, height: 300}}
+            style={{width: 220, height: 220}}
           />
         </View>
         {/* <Text

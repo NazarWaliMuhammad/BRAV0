@@ -26,6 +26,7 @@ import {
   setSubLvlCompleted,
   setTimer,
   setTimerPlaying,
+  setFlipIndex,
 } from '../../redux/Action/Action';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
@@ -841,9 +842,10 @@ const WinModal = props => {
                 props.onPressWin();
                 console.log('Done');
                 props.onPress();
+                dispatch(setFlipIndex([]));
               } else {
                 // dispatch(setTimerPlaying(true));
-
+                dispatch(setFlipIndex([]));
                 console.log(isOpen);
                 addToFirestore();
                 props.onPress();

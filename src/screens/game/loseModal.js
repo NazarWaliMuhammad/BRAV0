@@ -13,8 +13,11 @@ import Touchableopacity from '../../components/Touchableopacity';
 import LinearGradient from 'react-native-linear-gradient';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useDispatch} from 'react-redux';
+import {setFlipIndex} from '../../../redux/Action/Action';
 
 const LoseModal = props => {
+  const dispatch = useDispatch();
   const {t, i18n} = useTranslation();
   const data = props.imgs;
   return (
@@ -65,6 +68,7 @@ const LoseModal = props => {
                       // borderRadius: 6,
                     }}
                     onPress={() => {
+                      dispatch(setFlipIndex([]));
                       props.onPressCancel();
                     }}>
                     <Entypo name="cross" size={50} color="white" />
@@ -119,6 +123,7 @@ const LoseModal = props => {
                 }}>
                 <Touchableopacity
                   onPress={() => {
+                    dispatch(setFlipIndex([]));
                     props.onPressRetry();
 
                     // setShowSettingsModal(true);

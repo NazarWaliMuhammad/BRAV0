@@ -94,12 +94,15 @@ const GameReset = props => {
         subLevel5: 1,
         subLevel6: 1,
         mainLevel: 1,
+        score: 0,
+
         // subLevelCompleted: [],
         mainLevelCompleted: [],
       })
       .then(() => {
         console.log('data updated');
       });
+    dispatch(setScore(0));
 
     dispatch(setSublevel1(1));
     dispatch(setSublevel2(1));

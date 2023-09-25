@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  FLIP_INDEX,
   GAME_COMPLETION,
   INDEX,
   MAINLVLCOMPLETED,
@@ -44,8 +45,9 @@ const INITIAL = {
   subLvlCmplt: [],
   mainIndex: 0,
   mainLvlCmplt: [],
+  flipIndex: [],
 };
-console.log(INITIAL.sound);
+// console.log(INITIAL.sound);
 export const Reducer = (state = INITIAL, action) => {
   switch (action.type) {
     case SET_TIMER:
@@ -88,6 +90,8 @@ export const Reducer = (state = INITIAL, action) => {
       return {...state, mainIndex: action.payload};
     case MAINLVLCOMPLETED:
       return {...state, mainLvlCmplt: action.payload};
+    case FLIP_INDEX:
+      return {...state, flipIndex: action.payload};
     default:
       return state;
   }
