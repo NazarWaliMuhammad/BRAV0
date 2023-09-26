@@ -109,7 +109,7 @@ const GreetingModal = props => {
               color: 'gray',
               paddingTop: 5,
             }}>
-            {t('you completed')} {mainlvlState - 1}
+            {t('you completed level')} {mainlvlState - 1}
           </Text>
           {/* </View> */}
           {/* <View

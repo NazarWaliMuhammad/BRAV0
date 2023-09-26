@@ -256,7 +256,7 @@ const Scoreboard = props => {
             fontWeight: 300,
             textAlign: 'center',
           }}>
-          Show the scores of different users here
+          {t('Show the scores of different users here')}
         </Text>
       </View>
       <View
@@ -274,7 +274,7 @@ const Scoreboard = props => {
             // fontWeight: 300,
             // textAlign: 'left',
           }}>
-          Points
+          {t('Points')}
         </Text>
       </View>
       <FlatList

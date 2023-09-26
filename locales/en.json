@@ -28,7 +28,7 @@
     "Do you give up" : "Do you give up?"
      ,"Yes" : "Yes",
      "Congratulations" :"Bravo!!"
-     ,"youcompletedd level" : "you completed the level",
+     ,"you completed level" : "you completed the level",
      "Game Completed" :"Game Completed!!",
      "Congratulations!! you won the game continue to reset" :"Congratulations!! you won the game, continue to reset",
      "Points" : "Points",
@@ -40,5 +40,6 @@
      "Produced by: Marco Dané and Federica Dané" : "Produced by: Marco Dané and Federica Dané",
      "Logout" : "Logout",
      "Close" :"Close",
-     "Scoreboard" :"Scoreboard"
+     "Scoreboard" :"Scoreboard",
+     "Show the scores of different users here" : "Show the scores of different users here"
 }
